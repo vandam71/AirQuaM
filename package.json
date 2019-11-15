@@ -1,29 +1,21 @@
 {
-  "name": "airquam",
-  "version": "1.0.0",
-  "description": "AirQuaM web server with database integration",
-  "main": "server.js",
+  "name": "airquam-webserver",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vandam71/AirQuaM_webserver.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vandam71/AirQuaM_webserver/issues"
-  },
-  "homepage": "https://github.com/vandam71/AirQuaM_webserver#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
     "ejs": "^2.7.2",
-    "express": "^4.17.1",
+    "express": "^4.16.4",
     "express-fileupload": "^1.1.6-alpha.6",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
     "mysql": "^2.17.1",
-    "nodemon": "^1.19.4",
     "req-flash": "0.0.3"
   }
 }
