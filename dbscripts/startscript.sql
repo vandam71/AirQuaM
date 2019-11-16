@@ -42,5 +42,5 @@ CREATE TABLE IF NOT EXISTS Measurement(
     Humidity FLOAT(3,1),
     PRIMARY KEY (measurementID),
     FOREIGN KEY (stationID) REFERENCES Station(stationID),
-    CONSTRAINT Fk_Measurement FOREIGN KEY (ZoneLatitude,ZoneLongitude) REFERENCES Zone(ZoneLatitude,ZoneLongitude)
+    FOREIGN KEY (ZoneLatitude,ZoneLongitude) REFERENCES Zone(ZoneLatitude,ZoneLongitude)
 );
