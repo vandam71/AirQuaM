@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1 Database Test
+    form(action="/db", method="post")
+        .input
+            .label Input Line
+            input(type="text", name="dbcontent")
+        .actions
+            input(type="submit", value="Send")
