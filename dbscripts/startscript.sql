@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS Prediction(
     CO INT,
     CO2 INT,
     TVOC INT,
-    PRIMARY KEY (ZoneLatitude, ZoneLongitude, date),
-    FOREIGN KEY (ZoneLatitude, ZoneLongitude) REFERENCES Zone(ZoneLatitude, ZoneLongitude)
+    PRIMARY KEY (ZoneLatitude, ZoneLongitude, date)
 );
 
 CREATE TABLE IF NOT EXISTS Measurement(
@@ -43,5 +42,5 @@ CREATE TABLE IF NOT EXISTS Measurement(
     Humidity FLOAT(3,1),
     PRIMARY KEY (measurementID),
     FOREIGN KEY (stationID) REFERENCES Station(stationID),
-    FOREIGN KEY (ZoneLatitude, ZoneLongitude) REFERENCES Zone(ZoneLatitude, ZoneLongitude)
+    FOREIGN KEY (ZoneLatitude,ZoneLongitude) REFERENCES Zone(ZoneLatitude,ZoneLongitude)
 );
