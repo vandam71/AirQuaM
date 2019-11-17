@@ -13,10 +13,10 @@
     "express": "^4.16.4",
     "express-fileupload": "^1.1.6-alpha.6",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "mysql": "^2.17.1",
     "nodemon": "^1.19.4",
+    "pug": "^2.0.4",
     "req-flash": "0.0.3"
   }
 }
