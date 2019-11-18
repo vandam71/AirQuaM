@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Station(
 );
 
 CREATE TABLE IF NOT EXISTS Zone(
+    ZoneID INT NOT NULL AUTO_INCREMENT,
     ZoneLatitude FLOAT(5,2) NOT NULL,
     ZoneLongitude FLOAT(5,2) NOT NULL,
     PRIMARY KEY (ZoneLatitude, ZoneLongitude)
