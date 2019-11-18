@@ -4,18 +4,16 @@ var path = require('path');
 var mysql = require('mysql');
 var connection = require('./lib/db');
 
-router.get('/test', function (req, res, next) {
-    res.render('dbtest');
-});
-
-router.post('/Zone', function (req, res) {
+router.post('/zone', function (req, res) {
     var total = 0;
     var insert = 1;
     connection.query("SELECT ZoneLatitude, ZoneLongitude FROM Zone", function (err, result, fields) {
         if (err) {
             console.error(err);
         }
+        console.log
         for (var i = 0; i<result.length; i++) {
+            console.log(result[i].ZoneLatitude+ " " + result[i].ZoneLongitude);
             if (result[i].ZoneLatitude == req.body.a) {
                 insert = 0;
                 break;
