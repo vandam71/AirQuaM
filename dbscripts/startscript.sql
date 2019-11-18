@@ -12,19 +12,18 @@ CREATE TABLE IF NOT EXISTS Zone(
     ZoneID INT NOT NULL AUTO_INCREMENT,
     ZoneLatitude FLOAT(5,2) NOT NULL,
     ZoneLongitude FLOAT(5,2) NOT NULL,
-    PRIMARY KEY (ZoneLatitude, ZoneLongitude)
+    PRIMARY KEY (ZoneID)
 );
 
 CREATE TABLE IF NOT EXISTS Prediction(
-    ZoneLatitude FLOAT(5,2) NOT NULL,
-    ZoneLongitude FLOAT(5,2) NOT NULL,
+    ZoneID INT NOT NULL,
     date DATE NOT NULL,
     NO2 INT,
     CO INT,
     CO2 INT,
     TVOC INT,
-    PRIMARY KEY (ZoneLatitude, ZoneLongitude, date),
-    FOREIGN KEY (ZoneLatitude, ZoneLongitude) REFERENCES Zone(ZoneLatitude, ZoneLongitude)
+    PRIMARY KEY (ZoneID, date),
+    FOREIGN KEY (ZoneID) REFERENCES Zone(ZoneID)
 );
 
 CREATE TABLE IF NOT EXISTS Measurement(
@@ -34,8 +33,7 @@ CREATE TABLE IF NOT EXISTS Measurement(
     date DATE NOT NULL,
     GPSlatitude FLOAT(11,8) NOT NULL,
     GPSlongitude FLOAT(11,8) NOT NULL,
-    ZoneLatitude FLOAT(5,2) NOT NULL,
-    ZoneLongitude FLOAT(5,2) NOT NULL,
+    ZoneID INT NOT NULL,
     NO2 INT,
     CO INT,
     CO2 INT,
@@ -44,5 +42,5 @@ CREATE TABLE IF NOT EXISTS Measurement(
     Humidity FLOAT(3,1),
     PRIMARY KEY (measurementID),
     FOREIGN KEY (stationID) REFERENCES Station(stationID),
-    FOREIGN KEY (ZoneLatitude, ZoneLongitude) REFERENCES Zone(ZoneLatitude, ZoneLongitude)
+    FOREIGN KEY (ZoneID) REFERENCES Zone(ZoneID)
 );
