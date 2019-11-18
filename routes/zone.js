@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var path = require('path');
-var mysql = require('mysql');
 var connection = require('./lib/db');
 
 router.post('/zone', function (req, res) {
@@ -12,32 +10,38 @@ router.post('/zone', function (req, res) {
             console.error(err);
         }
         console.log
-        for (var i = 0; i<result.length; i++) {
-            console.log(result[i].ZoneLatitude+ " " + result[i].ZoneLongitude);
-            if (result[i].ZoneLatitude == req.body.a) {
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].ZoneLatitude == req.body.ZoneLatitude) {
                 insert = 0;
                 break;
             };
-            if (result[i].ZoneLongitude == req.body.b) {
+            if (result[i].ZoneLongitude == req.body.ZoneLongitude) {
                 insert = 0;
                 break;
             }
             insert = 1;
         };
         if (insert == 0) {
+            console.log("Already in Table");
+            connection.query("SELECT * FROM Zone", function (err, result, fields) {
+                if (err) {
+                    console.error(err);
+                }
+                res.send(result);
+            });    
         } else if (insert == 1) {
-            connection.query("INSERT INTO Zone (ZoneLatitude, ZoneLongitude) VALUES ('" + req.body.a + "', '" + req.body.b + "')", function (err, result) {
+            connection.query("INSERT INTO Zone (ZoneLatitude, ZoneLongitude) VALUES ('" + req.body.ZoneLatitude + "', '" + req.body.ZoneLongitude + "')", function (err, result) {
                 if (err) {
                     console.error(err);
                 }
             });
+            connection.query("SELECT * FROM Zone", function (err, result, fields) {
+                if (err) {
+                    console.error(err);
+                }
+                res.send(result);
+            });
         }
-    });
-    connection.query("SELECT * FROM Zone", function (err, result, fields) {
-        if (err) {
-            console.error(err);
-        }
-        res.send(result);
     });
 });
 
