@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('./lib/db');
+var connection = require('../../lib/db');
 
 //POST method for /measurement
 router.post('/measurement', function (req, res) {

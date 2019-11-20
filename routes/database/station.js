@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('./lib/db');
+var connection = require('../../lib/db');
 
 //GET method for /station
 router.get('/station', function (req, res) {

@@ -1,0 +1,36 @@
+extends layout
+
+block content
+    h1 Measurement List
+    <div style="overflow-x:auto;">
+        table(id)
+            tr
+                td(style='font-size:150%;') <strong>ID</strong>
+                td(style='font-size:150%;') <strong>Station ID</strong>
+                td(style='font-size:150%;') <strong>Time</strong>
+                td(style='font-size:150%;') <strong>Date</strong>
+                td(style='font-size:150%;') <strong>GPS Latitude</strong>
+                td(style='font-size:150%;') <strong>GPS Longitude</strong>
+                td(style='font-size:150%;') <strong>Zone ID</strong>
+                td(style='font-size:150%;') <strong>NO2 (ppm)</strong>
+                td(style='font-size:150%;') <strong>CO (ppm)</strong>
+                td(style='font-size:150%;') <strong>CO2 (ppm)</strong>
+                td(style='font-size:150%;') <strong>TVOC (ppm)</strong>
+                td(style='font-size:150%;') <strong>Temperature (ºC)</strong>
+                td(style='font-size:150%;') <strong>Humidity (%)</strong>
+            for measurement in measurementList
+                tr
+                    td= measurement.measurementID
+                    td= measurement.stationID
+                    td= measurement.time
+                    td= measurement.date
+                    td= measurement.GPSlatitude
+                    td= measurement.GPSlongitude
+                    td= measurement.ZoneID
+                    td= measurement.NO2
+                    td= measurement.CO
+                    td= measurement.CO2
+                    td= measurement.TVOC
+                    td= measurement.Temperature
+                    td= measurement.Humidity
+    </div>

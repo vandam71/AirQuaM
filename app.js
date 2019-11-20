@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+var homeRouter = require('./routes/home');
+var infoRouter = require('./routes/info');
 
 //database requires
 var zoneRouter = require('./routes/database/zone');
@@ -26,9 +27,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'scripts')));
 
 //general route
-app.use('/', indexRouter);
+app.use('/', homeRouter);
+app.use('/info', infoRouter);
 
 //database routes
 app.use('/data', zoneRouter);

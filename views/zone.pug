@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1 Zone List
+    table
+        tr
+            td(style='font-size:150%;') <strong>ID</strong>
+            td(style='font-size:150%;') <strong>Latitude</strong>
+            td(style='font-size:150%;') <strong>Longitude</strong>
+        for zone in zoneList
+            tr
+                td= zone.ZoneID
+                td= zone.ZoneLatitude
+                td= zone.ZoneLongitude

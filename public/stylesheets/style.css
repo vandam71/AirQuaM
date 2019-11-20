@@ -1,8 +1,88 @@
 body {
-  padding: 50px;
+  background-color: white;
+  padding: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+ul{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*TOP NAVIGATION BAR SETTINGS*/
+.topnav{
+  background-color: #333;
+  overflow: hidden;
+}
+
+.topnav a{
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover{
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active{
+  background-color: #4CAF50;
+  color: white;
+}
+
+.topnav .icon{
+  display: none;
+}
+
+.topnav input[type=text]{
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
+
+/*TABLE SETTINGS*/
+table{
+  font-family: Arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th{
+  border: 1px solid black;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:first-child{
+  background-color: #4CAF50;
+}
+
+tr:nth-child(even){
+  background-color: lightgray;
+}
+
+/*BUTTON SETTINGS*/
+button{
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  float: right;
+  margin: 10px auto auto auto;
 }

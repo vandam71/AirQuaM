@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    script.
+        function addStation() {
+            location.replace("/info/zone");
+        }
+    button(onClick='addStation()') Add Station
+    h1 Station List
+    table(id="stationTable")
+
+        tr
+            th(style='font-size:150%;') <strong>ID</strong>
+            th(style='font-size:150%;') <strong>Name</strong>
+        for station in stationList
+            tr
+                td= station.stationID
+                td= station.name

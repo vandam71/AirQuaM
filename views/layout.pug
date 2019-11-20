@@ -3,5 +3,12 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
   body
+    .topnav
+      a.active(href='/') Home
+      a(href='/info/station') Station
+      a(href='/info/measurement') Measurement
+      a(href='/info/zone') Zones
+      input(type="text", placeholder="Search...")
     block content
