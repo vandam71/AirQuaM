@@ -3,7 +3,8 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '1234',
-    database: 'airquam'
+    database: 'airquam',
+    dateStrings: true
 });
 
 connection.connect(function(error){

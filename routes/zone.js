@@ -2,6 +2,15 @@ var express = require('express');
 var router = express.Router();
 var connection = require('./lib/db');
 
+router.get('/zone', function (req, res){
+    connection.query("SELECT * FROM Zone", function (err, result, fields) {
+        if (err) {
+            console.error(err);
+        }
+        res.send(result);
+    });
+});
+
 router.post('/zone', function (req, res) {
     var total = 0;
     var insert = 1;
@@ -44,5 +53,29 @@ router.post('/zone', function (req, res) {
         }
     });
 });
+
+router.delete('/zone', function (req, res) {
+    connection.query("SELECT * FROM Zone WHERE ZoneID=" + req.body.ZoneID, function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+        if (result.length == 0) {
+            res.send("No Matching ID");
+        }
+        else {
+            connection.query("DELETE FROM Zone WHERE ZoneID=" + req.body.ZoneID, function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+                connection.query("SELECT * FROM Zone", function (err, result) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    res.send(result);
+                });
+            });
+        };
+    });
+})
 
 module.exports = router;

@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 var connection = require('./lib/db');
 
-router.get('/station', function (req,res){
-    connection.query("SELECT * FROM Station", function (err, result, fields) {
+router.get('/station', function (req, res) {
+    connection.query("SELECT * FROM Station", function (err, result) {
         if (err) {
             console.error(err);
         }
@@ -17,7 +17,7 @@ router.post('/station', function (req, res) {
             console.error(err);
         }
     });
-    connection.query("SELECT * FROM Station", function (err, result, fields) {
+    connection.query("SELECT * FROM Station", function (err, result) {
         if (err) {
             console.error(err);
         }
@@ -26,7 +26,7 @@ router.post('/station', function (req, res) {
 });
 
 router.put('/station', function (req, res) {
-    connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result, fields) {
+    connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
         if (err) {
             console.error(err);
         }
@@ -38,7 +38,7 @@ router.put('/station', function (req, res) {
                 if (err) {
                     console.log(err);
                 }
-                connection.query("SELECT * FROM Station", function (err, result, fields) {
+                connection.query("SELECT * FROM Station", function (err, result) {
                     if (err) {
                         console.error(err);
                     }
@@ -50,7 +50,7 @@ router.put('/station', function (req, res) {
 });
 
 router.delete('/station', function (req, res) {
-    connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result, fields) {
+    connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
         if (err) {
             console.error(err);
         }
@@ -58,11 +58,11 @@ router.delete('/station', function (req, res) {
             res.send("No Matching ID");
         }
         else {
-            connection.query("DELETE FROM Station WHERE stationID=" + req.body.stationID, function (err, result, fields) {
+            connection.query("DELETE FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
                 if (err) {
                     console.log(err);
                 }
-                connection.query("SELECT * FROM Station", function (err, result, fields) {
+                connection.query("SELECT * FROM Station", function (err, result) {
                     if (err) {
                         console.error(err);
                     }
@@ -72,6 +72,5 @@ router.delete('/station', function (req, res) {
         };
     });
 })
-
 
 module.exports = router;
