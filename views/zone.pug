@@ -1,14 +1,24 @@
 extends layout
 
 block content
+    script.
+        function redirect(e){
+            var row = e.closest('tr').rowIndex;
+            var table = document.getElementById("zoneTable");
+            var data = table.rows[row].cells[0].firstChild.nodeValue;
+            var url = "/info/zone/" + parseInt(data);
+            location.replace(url);
+        }
     h1 Zone List
-    table
+    table(id='zoneTable')
         tr
             td(style='font-size:150%;') <strong>ID</strong>
             td(style='font-size:150%;') <strong>Latitude</strong>
             td(style='font-size:150%;') <strong>Longitude</strong>
         for zone in zoneList
-            tr
-                td= zone.ZoneID
+            tr(id=zoneID)
+                td.id= zone.ZoneID
                 td= zone.ZoneLatitude
                 td= zone.ZoneLongitude
+                td(width="1%")
+                    button#btn1(onclick='redirect(this)') GO
