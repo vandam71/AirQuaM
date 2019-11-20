@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var connection = require('./lib/db');
 
+//POST method for /measurement
 router.post('/measurement', function (req, res) {
     var Latitude = (req.body.GPSlatitude).toFixed(2);
     var Longitude = (req.body.GPSlongitude).toFixed(2);
@@ -45,6 +46,7 @@ router.post('/measurement', function (req, res) {
     });
 });
 
+//GET method for /measurement
 router.get('/measurement', function (req, res) {
     connection.query("SELECT * FROM Measurement", function (err, result) {
         if (err) {
@@ -54,6 +56,7 @@ router.get('/measurement', function (req, res) {
     });
 });
 
+//DELETE method for /measurement
 router.delete('/measurement', function (req, res) {
     connection.query("SELECT * FROM Measurement WHERE measurementID=" + req.body.measurementID, function (err, result) {
         if (err) {

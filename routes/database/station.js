@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var connection = require('./lib/db');
 
+//GET method for /station
 router.get('/station', function (req, res) {
     connection.query("SELECT * FROM Station", function (err, result) {
         if (err) {
@@ -11,6 +12,7 @@ router.get('/station', function (req, res) {
     });
 });
 
+//POST method for /station
 router.post('/station', function (req, res) {
     connection.query("INSERT INTO Station (name) VALUES ('" + req.body.name + "')", function (err, result) {
         if (err) {
@@ -25,6 +27,7 @@ router.post('/station', function (req, res) {
     });
 });
 
+//PUT method for /station
 router.put('/station', function (req, res) {
     connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
         if (err) {
@@ -49,6 +52,7 @@ router.put('/station', function (req, res) {
     });
 });
 
+//DELETE method for /station
 router.delete('/station', function (req, res) {
     connection.query("SELECT * FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
         if (err) {

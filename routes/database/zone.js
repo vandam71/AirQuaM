@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 var connection = require('./lib/db');
 
+//GET method for /zone
 router.get('/zone', function (req, res){
+    //SELECT all values from Zone table
     connection.query("SELECT * FROM Zone", function (err, result, fields) {
         if (err) {
             console.error(err);
@@ -11,9 +13,11 @@ router.get('/zone', function (req, res){
     });
 });
 
+//POST method for /zone
 router.post('/zone', function (req, res) {
     var total = 0;
     var insert = 1;
+    //SELECT all Zone entries and put check if ZoneLatitude or Zonelongitude have a match
     connection.query("SELECT ZoneLatitude, ZoneLongitude FROM Zone", function (err, result, fields) {
         if (err) {
             console.error(err);
@@ -39,11 +43,13 @@ router.post('/zone', function (req, res) {
                 res.send(result);
             });    
         } else if (insert == 1) {
+            //INSERT new values to table
             connection.query("INSERT INTO Zone (ZoneLatitude, ZoneLongitude) VALUES ('" + req.body.ZoneLatitude + "', '" + req.body.ZoneLongitude + "')", function (err, result) {
                 if (err) {
                     console.error(err);
                 }
             });
+            //SELECT all values from Zone table
             connection.query("SELECT * FROM Zone", function (err, result, fields) {
                 if (err) {
                     console.error(err);
@@ -54,6 +60,7 @@ router.post('/zone', function (req, res) {
     });
 });
 
+//DELETE method from /zone
 router.delete('/zone', function (req, res) {
     connection.query("SELECT * FROM Zone WHERE ZoneID=" + req.body.ZoneID, function (err, result) {
         if (err) {

@@ -5,14 +5,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 
-var mysql = require('mysql');
-var connection = require('./routes/lib/db');
-
 var indexRouter = require('./routes/index');
-var zoneRouter = require('./routes/zone');
-var stationRouter = require('./routes/station');
-var measurementRouter = require('./routes/measurement');
 
+//database requires
+var zoneRouter = require('./routes/database/zone');
+var stationRouter = require('./routes/database/station');
+var measurementRouter = require('./routes/database/measurement');
+
+//app definition
 var app = express();
 
 // view engine setup
@@ -27,7 +27,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//general route
 app.use('/', indexRouter);
+
+//database routes
 app.use('/data', zoneRouter);
 app.use('/data', stationRouter);
 app.use('/data', measurementRouter);
