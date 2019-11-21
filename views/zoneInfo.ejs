@@ -1,0 +1,127 @@
+<% include partials/header.ejs %>
+<!-- CODE FROM HERE -->
+<h1>Zone <%= zoneInfo.ZoneID%></h1>
+<h2>Latitude <%= zoneInfo.ZoneLatitude%> Longitude <%= zoneInfo.ZoneLongitude%></h2>
+<div class="grid-container">
+    <div class="itemtable" style="height: 240px; overflow: auto; width: auto;">
+        <table>
+            <tr>
+                <td><strong>ID</strong></td>
+                <td><strong>Station ID</strong></td>
+                <td><strong>Time</strong></td>
+                <td><strong>Date</strong></td>
+                <td><strong>GPS Latitude</strong></td>
+                <td><strong>GPS Longitude</strong></td>
+                <td><strong>NO2 (ppm)</strong></td>
+                <td><strong>CO (ppm)</strong></td>
+                <td><strong>CO2 (ppm)</strong></td>
+                <td><strong>TVOC (ppm)</strong></td>
+                <td><strong>Temperature (ºC)</strong></td>
+                <td><strong>Humidity (%)</strong></td>
+            </tr>
+            <% for(var i=0; i<batch.length; i++) {%>
+            <tr>
+                <td><%= batch[i].measurementID%></td>
+                <td><%= batch[i].stationID%></td>
+                <td><%= batch[i].time%></td>
+                <td><%= batch[i].date%></td>
+                <td><%= batch[i].GPSlatitude%></td>
+                <td><%= batch[i].GPSlongitude%></td>
+                <td><%= batch[i].NO2%></td>
+                <td><%= batch[i].CO%></td>
+                <td><%= batch[i].CO2%></td>
+                <td><%= batch[i].TVOC%></td>
+                <td><%= batch[i].Temperature%></td>
+                <td><%= batch[i].Humidity%></td>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+    <div class="itemchart" id="chart" style="width: auto; height: auto;"></div>
+    <div class="itemmap" id="map" style="width: auto; height: 380px;">map</div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+</div>
+<script>
+    function initMap() {
+        var lat = parseFloat(<%= zoneInfo.ZoneLatitude %>);
+        var lng = parseFloat(<%= zoneInfo.ZoneLongitude %>);
+
+        var center = { lat: lat, lng: lng };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: center,
+            mapTypeId: 'satellite'
+        });
+
+        <% for (var i = 0; i < batch.length; i++) { %>
+            var marker = new google.maps.Marker({
+            map: map,
+            position: {
+                lat: parseFloat(<%= batch[i].GPSlatitude %>),
+                lng: parseFloat(<%= batch[i].GPSlongitude %>),
+            },
+        });
+            marker.setMap(map);
+        <% } %>;
+    }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClIURvk2YvL89LjCcv2-HS9FQzvOLqBdM&callback=initMap">
+    </script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Time');
+        data.addColumn('number', 'NO2');
+        data.addColumn('number', 'CO');
+        data.addColumn('number', 'CO2');
+        data.addColumn('number', 'TVOC');
+        data.addColumn('number', 'Temperature');
+        data.addColumn('number', 'Humidity');
+        
+        <% for (var i = 0; i < batch.length; i++) { %>
+            var stamp = (parseInt(<%= batch[i].timeLiteral %>));
+            var no2 = parseInt(<%= batch[i].NO2 %>);
+            var co = parseInt(<%= batch[i].CO %>);
+            var co2 = parseInt(<%= batch[i].CO2 %>);
+            var tvoc = parseInt(<%= batch[i].TVOC %>);
+            var temp = parseFloat(<%= batch[i].Temperature %>);
+            var rh = parseFloat(<%= batch[i].Humidity %>);
+
+            data.addRow([stamp, no2, co, co2, tvoc, temp, rh]);
+        <% } %>;
+
+        var options = {
+            chartArea: {
+                left: 40,
+                width: '80%',
+                height: '95%'
+            },
+            legend: {
+                position: 'right'
+            },
+            width: '100%'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart'));
+
+        chart.draw(data, options);
+    }
+</script>
+
+<!-- CODE TILL HERE -->
+</div>
+</body>
+
+</html>

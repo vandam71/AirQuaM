@@ -1,0 +1,44 @@
+<% include partials/header.ejs %>
+<!-- CODE FROM HERE -->
+<h1>Measurement List</h1>
+<div style="overflow-x: auto;">
+    <table>
+        <tr>
+            <td style="font-size: 150%;"><strong>ID</strong></td>
+            <td style="font-size: 150%;"><strong>Station ID</strong></td>
+            <td style="font-size: 150%;"><strong>Time</strong></td>
+            <td style="font-size: 150%;"><strong>Date</strong></td>
+            <td style="font-size: 150%;"><strong>GPS Latitude</strong></td>
+            <td style="font-size: 150%;"><strong>GPS Longitude</strong></td>
+            <td style="font-size: 150%;"><strong>Zone ID</strong></td>
+            <td style="font-size: 150%;"><strong>NO2 (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>CO (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>CO2 (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>TVOC (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>Temperature (ºC)</strong></td>
+            <td style="font-size: 150%;"><strong>Humidity (%)</strong></td>
+        </tr>
+        <% for(var i=0; i<measurementList.length; i++) {%>
+        <tr>
+            <td><%= measurementList[i].measurementID%></td>
+            <td><%= measurementList[i].stationID%></td>
+            <td><%= measurementList[i].time%></td>
+            <td><%= measurementList[i].date%></td>
+            <td><%= measurementList[i].GPSlatitude%></td>
+            <td><%= measurementList[i].GPSlongitude%></td>
+            <td><%= measurementList[i].ZoneID%></td>
+            <td><%= measurementList[i].NO2%></td>
+            <td><%= measurementList[i].CO%></td>
+            <td><%= measurementList[i].CO2%></td>
+            <td><%= measurementList[i].TVOC%></td>
+            <td><%= measurementList[i].Temperature%></td>
+            <td><%= measurementList[i].Humidity%></td>
+        </tr>
+        <% } %>
+    </table>
+</div>
+<!--CODE TILL HERE-->
+</div>
+</body>
+
+</html>

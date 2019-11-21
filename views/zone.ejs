@@ -1,0 +1,33 @@
+<% include partials/header.ejs %>
+<!-- CODE FROM HERE -->
+<script>
+    function redirect(e) {
+        var row = e.closest('tr').rowIndex;
+        var table = document.getElementById("zoneTable");
+        var data = table.rows[row].cells[0].firstChild.nodeValue;
+        var url = "/info/zone/" + parseInt(data);
+        location.replace(url);
+    }
+</script>
+<h1>Zone List</h1>
+<table id="zoneTable">
+    <tr>
+        <td style="font-size: 150%;"><strong>ID</strong></td>
+        <td style="font-size: 150%;"><strong>Latitude</strong></td>
+        <td style="font-size: 150%;"><strong>Longitude</strong></td>
+    </tr>
+    <% for(var i=0; i<zoneList.length; i++) {%>
+    <tr>
+        <td><%= zoneList[i].ZoneID%></td>
+        <td><%= zoneList[i].ZoneLatitude%></td>
+        <td><%= zoneList[i].ZoneLongitude%></td>
+        <td width="1%"><button id="btn1" onclick="redirect(this)">GO</button></td>
+    </tr>
+    <% } %>
+</table>
+
+<!-- CODE TILL HERE -->
+</div>
+</body>
+
+</html>
