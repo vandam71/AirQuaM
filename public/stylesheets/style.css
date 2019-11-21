@@ -1,4 +1,5 @@
-body {
+html, body {
+  height: 100%;
   background-color: white;
   padding: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -92,10 +93,17 @@ button{
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 8px 12px;
+  padding: 4px 16px;
   text-align: center;
   text-decoration: none;
   font-size: 14px;
   float: right;
   margin: auto;
+}
+
+#map{
+  margin: 0;
+  padding: 0;
+  height: 300px;
+  width: 300px;
 }
