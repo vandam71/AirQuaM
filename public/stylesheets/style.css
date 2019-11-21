@@ -59,6 +59,7 @@ table{
   font-family: Arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  font-size: 14px;
 }
 
 td, th{
@@ -101,9 +102,38 @@ button{
   margin: auto;
 }
 
+/*GOOGLE MAPS MAP STYLE*/
 #map{
   margin: 0;
   padding: 0;
-  height: 300px;
-  width: 300px;
+  height: auto;
+  width: auto;
+}
+
+/*GRID VIEW*/
+.grid-container {
+  display: grid;
+  grid-template-columns: 340px 340px 340px auto 340px 340px;
+  grid-template-rows: auto auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+  border: 1px solid gold;
+}
+
+.itemtable {
+  border: 1px solid black;
+  grid-area: 1 / 5 / span 2 / span 2;
+}
+.itemchart{
+	grid-area:1 / 1 / span 5 / span 3;
+}
+
+.itemmap {
+	grid-area: 4 / 5 /span 2 /span 2;
 }
