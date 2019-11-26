@@ -9,7 +9,9 @@ var homeRouter = require('./routes/home');
 
 //info requires
 var infoRouter = require('./routes/info/infoMain');
+var addStationRouter = require('./routes/info/addStation');
 var dynamicZoneRouter = require('./routes/info/dynamicZone');
+var dynamicStationRouter = require('./routes/info/dynamicStation');
 
 //database requires
 var zoneRouter = require('./routes/database/zone');
@@ -38,7 +40,9 @@ app.use('/', homeRouter);
 
 //info routes
 app.use('/info', infoRouter);
+app.use('/info', addStationRouter);
 app.use('/info', dynamicZoneRouter);
+app.use('/info', dynamicStationRouter);
 
 //database routes
 app.use('/data', zoneRouter);

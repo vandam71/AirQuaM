@@ -14,7 +14,7 @@ router.get('/station', function (req, res) {
 
 //POST method for /station
 router.post('/station', function (req, res) {
-    connection.query("INSERT INTO Station (name) VALUES ('" + req.body.name + "')", function (err, result) {
+    connection.query("INSERT INTO Station (name, sampleRate, activeSensors) VALUES ('" + req.body.name + "', '" + req.body.sampleRate + "', '" + req.body.activeSensors + "')", function (err, result) {
         if (err) {
             console.error(err);
         }

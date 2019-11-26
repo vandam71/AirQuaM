@@ -38,7 +38,7 @@
         </table>
     </div>
     <div class="itemchart" id="chart" style="width: auto; height: auto;"></div>
-    <div class="itemmap" id="map" style="width: auto; height: 380px;">map</div>
+    <div class="itemmap" id="map" style="width: auto; height: 380px;"></div>
     <div class="item"></div>
     <div class="item"></div>
     <div class="item"></div>
@@ -58,6 +58,22 @@
             center: center,
             mapTypeId: 'satellite'
         });
+
+        var markerC = new google.maps.Marker({
+            map: map,
+            position: center,
+            icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+        })
+
+        var infowindow = new google.maps.InfoWindow({
+            content: "Zone " + <%= zoneInfo.ZoneID %>
+        });
+
+        google.maps.event.addListener(markerC, 'click', (function () {
+            infowindow.open(map, markerC);
+        }));
+
+        markerC.setMap(map);
 
         <% for (var i = 0; i < batch.length; i++) { %>
             var marker = new google.maps.Marker({

@@ -2,16 +2,21 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../../lib/db');
 
+var ID;
+var exists;
+
 //POST method for /measurement
 router.post('/measurement', function (req, res) {
     var Latitude = (req.body.GPSlatitude).toFixed(2);
     var Longitude = (req.body.GPSlongitude).toFixed(2);
-    var ID;
     connection.query("SELECT COUNT(*) AS value FROM Zone WHERE ZoneLatitude=" + Latitude + " AND ZoneLongitude=" + Longitude, function (err, result) {
         if (err) {
             console.error(err.message);
         }
-        if (result[0].value == 0) {
+        exists = result[0].value;
+        console.log(exists);
+        if (exists == 0) {
+            console.log("here");
             connection.query("INSERT INTO Zone (ZoneLatitude, ZoneLongitude) VALUES ('" + Latitude + "', '" + Longitude + "')", function (err, result) {
                 if (err) {
                     console.error(err.message);
@@ -43,7 +48,7 @@ router.post('/measurement', function (req, res) {
                 });
             }
         });
-    });
+    })
 });
 
 //GET method for /measurement

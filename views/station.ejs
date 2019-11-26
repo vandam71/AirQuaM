@@ -5,6 +5,15 @@
         location.replace("/info/station/add");
     }
 </script>
+<script>
+    function redirect(e) {
+        var row = e.closest('tr').rowIndex;
+        var table = document.getElementById("StationTable");
+        var data = table.rows[row].cells[0].firstChild.nodeValue;
+        var url = "/info/station/" + parseInt(data);
+        location.replace(url);
+    }
+</script>
 <button onclick="addStation()">Add Station</button>
 <h1>Station List</h1>
 <table id="StationTable">
@@ -16,6 +25,7 @@
     <tr>
         <td><%= stationList[i].stationID%></td>
         <td><%= stationList[i].name%></td>
+        <td width="1%"><button id="btn1" onclick="redirect(this)">EDIT</button></td>
     </tr>
     <% } %>
 </table>
