@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
+    "cypress": "^3.7.0",
     "debug": "~2.6.9",
     "ejs": "^2.7.4",
     "express": "^4.16.4",
@@ -17,5 +19,8 @@
     "mysql": "^2.17.1",
     "nodemon": "^1.19.4",
     "req-flash": "0.0.3"
+  },
+  "devDependencies": {
+    "cypress": "^3.7.0"
   }
 }
