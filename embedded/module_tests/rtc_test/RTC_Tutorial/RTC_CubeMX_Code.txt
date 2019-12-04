@@ -1,0 +1,30 @@
+//1) Set time 
+sTime.Hours = 23;
+sTime.Minutes = 59;
+sTime.Seconds = 45;
+HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+//2) Set date 
+sDate.Date = 31;
+sDate.Month = RTC_MONTH_DECEMBER;
+sDate.WeekDay = RTC_WEEKDAY_SUNDAY;
+sDate.Year = 17;
+HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+
+
+
+HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+HAL_Delay(200);
+
+
+void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hrtc);
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the HAL_RTC_AlarmAEventCallback could be implemented in the user file
+   */
+	
+	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+}
