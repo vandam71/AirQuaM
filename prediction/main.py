@@ -25,17 +25,15 @@ tempdata['Pollution'].fillna(0, inplace=True)
 
 tempdata = tempdata[24:]
 
-print(tempdata.head(5))
-
 tempdata.to_csv('pollution_parsed.csv')
 
-#------------CODE START------------------
+#------------CODE START------------------#
 
 #load dataset
 dataset = pd.read_csv('pollution_parsed.csv', header=0, index_col=0)
 values = dataset.values
 
-#integer encode direction
+#integer encode directioner
 encoder = LabelEncoder()
 values[:,4] = encoder.fit_transform(values[:,4])
 
@@ -116,7 +114,7 @@ inv_y = inv_y[:,0]
 rmse = math.sqrt(mean_squared_error(inv_y, inv_yhat))
 print('Test RMSE: %.3f' % rmse)
 
-plt.plot(inv_yhat[-100:100], label='Prediction')
+plt.plot(inv_yhat[-100:], label='Prediction')
 plt.plot(inv_y[-100:], label='Real')
 plt.legend()
 plt.show()

@@ -1,6 +1,5 @@
 import pandas as pd
 from cycler import concat
-import tensorflow as tf
 
 #convert series to supervised learning
 def SeriesToSupervised(data, n_in=1, n_out=1, dropnan=True):
