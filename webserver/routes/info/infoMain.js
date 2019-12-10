@@ -12,7 +12,9 @@ router.get('/station', function (req, res) {
             for (var i = 0; i < rows.length; i++) {
                 var station = {
                     'stationID': rows[i].stationID,
-                    'name': rows[i].name
+                    'name': rows[i].name,
+                    'sampleRate': rows[i].sampleRate,
+                    'activeSensors': rows[i].activeSensors
                 }
                 stationList.push(station);
             }

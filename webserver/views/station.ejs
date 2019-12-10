@@ -20,11 +20,15 @@
     <tr>
         <th style="font-size: 150%;"><strong>ID</strong></th>
         <th style="font-size: 150%;"><strong>Name</strong></th>
+        <th style="font-size: 150%;"><strong>Sample Rate</strong></th>
+        <th style="font-size: 150%;"><strong>Active Sensors</strong></th>
     </tr>
     <% for(var i=0; i<stationList.length; i++) {%>
     <tr>
         <td><%= stationList[i].stationID%></td>
         <td><%= stationList[i].name%></td>
+        <td><%= stationList[i].sampleRate%></td>
+        <td><%= stationList[i].activeSensors%></td>
         <td width="1%"><button id="btn1" onclick="redirect(this)">EDIT</button></td>
     </tr>
     <% } %>

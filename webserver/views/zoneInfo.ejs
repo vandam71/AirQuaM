@@ -18,21 +18,23 @@
                 <td><strong>TVOC (ppm)</strong></td>
                 <td><strong>Temperature (ºC)</strong></td>
                 <td><strong>Humidity (%)</strong></td>
+                <td><strong>Time Literal</strong></td>
             </tr>
             <% for(var i=0; i<batch.length; i++) {%>
             <tr>
                 <td><%= batch[i].measurementID%></td>
                 <td><%= batch[i].stationID%></td>
-                <td><%= batch[i].time%></td>
-                <td><%= batch[i].date%></td>
+                <td id="time<%=i%>"><%= batch[i].time%></td>
+                <td id="date<%=i%>"><%= batch[i].date%></td>
                 <td><%= batch[i].GPSlatitude%></td>
                 <td><%= batch[i].GPSlongitude%></td>
-                <td><%= batch[i].NO2%></td>
-                <td><%= batch[i].CO%></td>
-                <td><%= batch[i].CO2%></td>
-                <td><%= batch[i].TVOC%></td>
-                <td><%= batch[i].Temperature%></td>
-                <td><%= batch[i].Humidity%></td>
+                <td id="no<%=i%>"><%= batch[i].NO2%></td>
+                <td id="co<%=i%>"><%= batch[i].CO%></td>
+                <td id="eco<%=i%>"><%= batch[i].CO2%></td>
+                <td id="tvoc<%=i%>"><%= batch[i].TVOC%></td>
+                <td id="temp<%=i%>"><%= batch[i].Temperature%></td>
+                <td id="rh<%=i%>"><%= batch[i].Humidity%></td>
+                <td id="tl<%=i%>"><%= batch[i].timeLiteral%></td>
             </tr>
             <% } %>
         </table>
@@ -97,26 +99,35 @@
 
     function drawChart() {
 
+        var total = <%= batch.length %>;
+
         var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Time');
+        data.addColumn('datetime', 'Date');
         data.addColumn('number', 'NO2');
         data.addColumn('number', 'CO');
         data.addColumn('number', 'CO2');
         data.addColumn('number', 'TVOC');
         data.addColumn('number', 'Temperature');
         data.addColumn('number', 'Humidity');
-        
-        <% for (var i = 0; i < batch.length; i++) { %>
-            var stamp = (parseInt(<%= batch[i].timeLiteral %>));
-            var no2 = parseInt(<%= batch[i].NO2 %>);
-            var co = parseInt(<%= batch[i].CO %>);
-            var co2 = parseInt(<%= batch[i].CO2 %>);
-            var tvoc = parseInt(<%= batch[i].TVOC %>);
-            var temp = parseFloat(<%= batch[i].Temperature %>);
-            var rh = parseFloat(<%= batch[i].Humidity %>);
 
-            data.addRow([stamp, no2, co, co2, tvoc, temp, rh]);
-        <% } %>;
+        for (var i = 0; i < 20; i++) {
+            var no2 = parseInt(document.getElementById("no" + i).innerHTML);
+            var co = parseInt(document.getElementById("co" + i).innerHTML);
+            var co2 = parseInt(document.getElementById("eco" + i).innerHTML);
+            var tvoc = parseInt(document.getElementById("tvoc" + i).innerHTML);
+            var temp = parseFloat(document.getElementById("temp" + i).innerHTML);
+            var rh = parseFloat(document.getElementById("rh" + i).innerHTML);
+
+            var date = document.getElementById("date" + i).innerHTML;
+            var time = document.getElementById("time" + i).innerHTML;
+    
+            var parsedDate = date.split("-")
+            var parsedTime = time.split(":")
+
+            var datetime = new Date(parseInt(parsedDate[0]), parseInt(parsedDate[1])-1, parseInt(parsedDate[2]), parseInt(parsedTime[0]), parseInt(parsedTime[1]), parseInt(parsedTime[2]), 00)
+
+            data.addRow([datetime, no2, co, co2, tvoc, temp, rh]);
+        };
 
         var options = {
             chartArea: {

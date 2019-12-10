@@ -22,28 +22,27 @@ router.get("/zone/:id", function (req, res) {
                 }
                 else {
                     for (var i = 0; i < rows.length; i++) {
-                        for (var i = 0; i < rows.length; i++) {
-                            var words = (rows[i].time).split(':');
-                            var timeLiteral = parseInt(words[1]) + (parseInt(words[0])*60);
+                        var words = (rows[i].time).split(':');
+                        var timeLiteral = parseInt(words[1]) + (parseInt(words[0]) * 60);
 
-                            var measurement = {
-                                'measurementID': rows[i].measurementID,
-                                'stationID': rows[i].stationID,
-                                'time': rows[i].time,
-                                'timeLiteral': timeLiteral,
-                                'date': rows[i].date,
-                                'GPSlatitude': rows[i].GPSlatitude,
-                                'GPSlongitude': rows[i].GPSlongitude,
-                                'ZoneID':rows[i].ZoneID,
-                                'NO2': rows[i].NO2,
-                                'CO': rows[i].CO,
-                                'CO2': rows[i].CO2,
-                                'TVOC': rows[i].TVOC,
-                                'Temperature': rows[i].Temperature,
-                                'Humidity': rows[i].Humidity
-                            }
-                            batch.push(measurement);
+                        var measurement = {
+                            'measurementID': rows[i].measurementID,
+                            'stationID': rows[i].stationID,
+                            'time': rows[i].time,
+                            'timeLiteral': timeLiteral,
+                            'date': rows[i].date,
+                            'dateTest': toString(rows[i].date),
+                            'GPSlatitude': rows[i].GPSlatitude,
+                            'GPSlongitude': rows[i].GPSlongitude,
+                            'ZoneID': rows[i].ZoneID,
+                            'NO2': rows[i].NO2,
+                            'CO': rows[i].CO,
+                            'CO2': rows[i].CO2,
+                            'TVOC': rows[i].TVOC,
+                            'Temperature': rows[i].Temperature,
+                            'Humidity': rows[i].Humidity
                         }
+                        batch.push(measurement);
                     }
                     res.render('zoneInfo', {
                         "zoneInfo": zoneInfo,

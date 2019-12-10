@@ -1,6 +1,19 @@
 <% include partials/header.ejs %>
 <!-- CODE FROM HERE -->
-<h2><%= stationID%></h2>
+<form action="/info/station/<%= station.stationID %>/" method="post">
+    <p><label for="station_name">Enter name: </label>
+        <input id="station_name" type="text" name="stationName" value="<%= station.name %>"></p>
+    <p><label for="sampleRate">Sample Rate (s):</label>
+        <input id="sampleRate" type="number" name="sampleRate" value="<%= station.sampleRate %>"></p>
+    <p><label for="activeSensors">Active Sensors (0-15)</label>
+        <input id="activeSensors" type="number" name="activeSensors" min="0" max="15" step="1"
+            value="<%= station.activeSensors %>"></p>
+    <input type="submit" value="Edit">
+</form>
+
+<form action="/info/station/<%= station.stationID %>/delete/" method="post">
+    <input type="submit" value="Delete">
+</form>
 <!-- CODE TILL HERE -->
 </div>
 </body>

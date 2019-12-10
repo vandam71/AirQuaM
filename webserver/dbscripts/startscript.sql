@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Station(
     stationID INT NOT NULL AUTO_INCREMENT,
     name CHAR(20) NOT NULL,
     sampleRate INT NOT NULL,
-    activeSensors INT check (activeSensors between 0 and 127),
+    activeSensors INT check (activeSensors between 0 and 15),
     PRIMARY KEY (stationID)
 );
 
