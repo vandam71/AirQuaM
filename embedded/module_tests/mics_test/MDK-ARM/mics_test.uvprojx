@@ -547,6 +547,11 @@
               <FileType>1</FileType>
               <FilePath>..\SourceCode\Src\gas.c</FilePath>
             </File>
+            <File>
+              <FileName>average.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\average.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
