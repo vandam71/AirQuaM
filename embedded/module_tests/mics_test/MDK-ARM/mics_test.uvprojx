@@ -312,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F767xx,USE_HAL_DRIVER,STM32F767xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc; ../Drivers/STM32F7xx_HAL_Driver/Inc; ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F7xx/Include; ../Drivers/CMSIS/Include; ..\SourceCode\Inc</IncludePath>
+              <IncludePath>../Core/Inc;  ../Drivers/STM32F7xx_HAL_Driver/Inc;  ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;  ../Drivers/CMSIS/Include;  ..\SourceCode\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -408,6 +408,11 @@
               <FilePath>../Core/Src/adc.c</FilePath>
             </File>
             <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/i2c.c</FilePath>
+            </File>
+            <File>
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/usart.c</FilePath>
@@ -441,6 +446,16 @@
               <FileName>stm32f7xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_i2c_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f7xx_hal_tim.c</FileName>
@@ -513,16 +528,6 @@
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f7xx_hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_i2c_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f7xx_hal_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exti.c</FilePath>
@@ -551,6 +556,26 @@
               <FileName>average.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\Src\average.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccs811.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\ccs811.c</FilePath>
+            </File>
+            <File>
+              <FileName>hdc1080.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\hdc1080.c</FilePath>
+            </File>
+            <File>
+              <FileName>mics4514.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\mics4514.c</FilePath>
+            </File>
+            <File>
+              <FileName>environment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\environment.c</FilePath>
             </File>
           </Files>
         </Group>

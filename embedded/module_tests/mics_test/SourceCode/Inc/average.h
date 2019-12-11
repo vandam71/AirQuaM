@@ -16,7 +16,7 @@ typedef struct average
 }average_t;
 	
 
-void average_init(average_t *);
+void average_init(average_t *, uint32_t);
 uint32_t fast_average(average_t *avr, uint32_t new_val);
 
 

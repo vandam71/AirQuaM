@@ -21,12 +21,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gas.h"
+#include "environment.h"
 #include "stdio.h"
 #include "stdlib.h"
 /* USER CODE END Includes */
@@ -95,9 +97,11 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_USART3_UART_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 	
 	gas_init();
+	environment_init();
 	
   /* USER CODE END 2 */
 
@@ -105,8 +109,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		printf("NO2: %uppb, CO: %uppb\r\n", readNO2(), readCO());
-		HAL_Delay(2000);
+		HAL_Delay(1000);
+		printf("NO2: %uppb,  CO: %uppb,  CO2: %uppb, TVOC: %uppb,  T: %.1f,  RH: %.1f \r\n",
+			readNO2(), readCO(), readCO2(), readTVOC(), readT(), readRH());
+		
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -162,8 +168,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_I2C2;
   PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+  PeriphClkInitStruct.I2c2ClockSelection = RCC_I2C2CLKSOURCE_PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();

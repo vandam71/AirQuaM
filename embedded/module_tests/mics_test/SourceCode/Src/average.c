@@ -5,11 +5,13 @@
   * @brief  initialize the average_t struct
   * @retval None
   */
-void average_init(average_t *avr)
+void average_init(average_t *avr, uint32_t initial)
 {
-	avr->average = 0;
+	avr->average = initial;
 	avr->index = 0;
-	memset(avr->buffer, 0, AVR_LEN); //zero the array
+
+	for(int i=0; i<AVR_LEN; i++)
+		avr->buffer[i] = initial;
 }
 	
 /**
