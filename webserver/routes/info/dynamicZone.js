@@ -5,7 +5,6 @@ var connection = require('../../lib/db');
 router.get("/zone/:id", function (req, res) {
     zoneID = parseInt(req.params.id);
     var batch = [];
-    var time = [];
     connection.query("SELECT * FROM Zone WHERE ZoneID=" + zoneID, function (err, result) {
         if (err) {
             console.log(err);
@@ -22,16 +21,15 @@ router.get("/zone/:id", function (req, res) {
                 }
                 else {
                     for (var i = 0; i < rows.length; i++) {
-                        var words = (rows[i].time).split(':');
-                        var timeLiteral = parseInt(words[1]) + (parseInt(words[0]) * 60);
-
+                        var time = (rows[i].time).split(':');
+                        var date = (rows[i].date).split('-');
+                        
                         var measurement = {
                             'measurementID': rows[i].measurementID,
                             'stationID': rows[i].stationID,
                             'time': rows[i].time,
-                            'timeLiteral': timeLiteral,
                             'date': rows[i].date,
-                            'dateTest': toString(rows[i].date),
+                            'datetime': new Date(date[0], date[1], date[2], time[0], time[1], time[2], 00),
                             'GPSlatitude': rows[i].GPSlatitude,
                             'GPSlongitude': rows[i].GPSlongitude,
                             'ZoneID': rows[i].ZoneID,
@@ -44,9 +42,12 @@ router.get("/zone/:id", function (req, res) {
                         }
                         batch.push(measurement);
                     }
+
+                    const sortedDate = batch.sort((a,b) => a.datetime - b.datetime);
+
                     res.render('zoneInfo', {
                         "zoneInfo": zoneInfo,
-                        "batch": batch
+                        "batch": sortedDate
                     })
                 }
             })
