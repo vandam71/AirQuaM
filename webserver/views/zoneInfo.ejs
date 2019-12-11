@@ -18,7 +18,6 @@
                 <td><strong>TVOC (ppm)</strong></td>
                 <td><strong>Temperature (ºC)</strong></td>
                 <td><strong>Humidity (%)</strong></td>
-                <td><strong>Time Literal</strong></td>
             </tr>
             <% for(var i=0; i<batch.length; i++) {%>
             <tr>
@@ -34,7 +33,6 @@
                 <td id="tvoc<%=i%>"><%= batch[i].TVOC%></td>
                 <td id="temp<%=i%>"><%= batch[i].Temperature%></td>
                 <td id="rh<%=i%>"><%= batch[i].Humidity%></td>
-                <td id="tl<%=i%>"><%= batch[i].timeLiteral%></td>
             </tr>
             <% } %>
         </table>
@@ -94,7 +92,8 @@
     </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['corechart'] });
+    //google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.load('current', { 'packages': ['line'] });
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
@@ -110,7 +109,7 @@
         data.addColumn('number', 'Temperature');
         data.addColumn('number', 'Humidity');
 
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 200; i++) {
             var no2 = parseInt(document.getElementById("no" + i).innerHTML);
             var co = parseInt(document.getElementById("co" + i).innerHTML);
             var co2 = parseInt(document.getElementById("eco" + i).innerHTML);
@@ -132,18 +131,25 @@
         var options = {
             chartArea: {
                 left: 40,
-                width: '80%',
-                height: '95%'
+                width: '100%',
+                height: '90%'
             },
+            width: '100%',
             legend: {
-                position: 'right'
-            },
-            width: '100%'
+                position: 'top', 
+                textStyle: {
+                    fontSize: 14
+                }
+            }
+            //curveType: 'function'
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart'));
+        var chart = new google.charts.Line(document.getElementById('chart'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
 
-        chart.draw(data, options);
+        //var chart = new google.visualization.LineChart(document.getElementById('chart'));
+
+        //chart.draw(data, options);
     }
 </script>
 
