@@ -36,11 +36,6 @@ extern UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN Private defines */
 
-extern volatile uint8_t UART2Rx_index;
-extern uint8_t UART2Rx_Buffer_arr[2][2048];
-extern uint8_t UART2Rx_Buffer_receiving;
-extern volatile uint8_t UART2_Received_Data;
-
 extern volatile uint8_t UART3Rx_index;
 extern uint8_t UART3Rx_Buffer[];
 extern volatile uint8_t UART3_Received_Data;

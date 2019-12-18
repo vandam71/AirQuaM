@@ -25,11 +25,6 @@
 #include "stm32f7xx_hal.h"
 #include "GPS.h"
 
-volatile uint8_t UART2Rx_index;
-uint8_t UART2Rx_Buffer_arr[2][2048]={0};
-uint8_t UART2Rx_Buffer_receiving = 0;
-volatile uint8_t UART2_Received_Data;
-
 volatile uint8_t UART3Rx_index;
 uint8_t UART3Rx_Buffer[2048]={0};
 volatile uint8_t UART3_Received_Data;
@@ -222,27 +217,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 	//gps huart
 	if (huart->Instance == USART2)
 	{
-		if(UART2Rx_Buffer_arr[UART2Rx_Buffer_receiving][UART2Rx_index] == '\n')
-		{
-			UART2Rx_Buffer_arr[UART2Rx_Buffer_receiving][UART2Rx_index+1] = '\0';
-			UART2Rx_Buffer_receiving = !UART2Rx_Buffer_receiving;
-			UART2_Received_Data = 1;
-			UART2Rx_index = 0;
-		}
-		else if(UART2Rx_Buffer_arr[UART2Rx_Buffer_receiving][UART2Rx_index] == '\r');
-		else
-		{
-			UART2Rx_index++;
-			UART2Rx_index &= ~(1<<7); //keep inside the limits
-		}
-		//set the interrups for UART3 Rx again
-		HAL_UART_Receive_IT(&huart2, &UART2Rx_Buffer_arr[UART2Rx_Buffer_receiving][UART2Rx_index], 1);
+		gps_CallBack();
 	}
-	
+
+
 }
-
-
-
 
 
 /* USER CODE END 1 */

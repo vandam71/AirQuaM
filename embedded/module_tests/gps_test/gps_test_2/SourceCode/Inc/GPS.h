@@ -1,54 +1,49 @@
 #ifndef _GPS_H_
 #define _GPS_H_
 
-#include <stdint.h>
+#include "stdint.h"
 
-//##################################################################################################################
+#define GPS_UART_HANDLER  huart2
+
+enum gps_return 
+{
+	GPS_SUCESS=0, 
+	GPS_FAIL
+};
 
 typedef struct
 {
-	uint8_t			UTC_Hour;
-	uint8_t			UTC_Min;
-	uint8_t			UTC_Sec;
-	uint16_t		UTC_MicroSec;
+	//uint8_t			UTC_Hour;
+	//uint8_t			UTC_Min;
+	//uint8_t			UTC_Sec;
+	//uint16_t		UTC_MicroSec;
 	
-	float				Latitude;
-	double			LatitudeDecimal;
-	char				NS_Indicator;
-	float				Longitude;
-	double			LongitudeDecimal;
-	char				EW_Indicator;
+	float				latitude;
+	//double			latitudeDecimal;
+	//char				NS_Indicator;
+	float				longitude;
+	//double			longitudeDecimal;
+	//char				EW_Indicator;
 	
-	uint8_t			PositionFixIndicator;
-	uint8_t			SatellitesUsed;
-	float				HDOP;
-	float				MSL_Altitude;
-	char				MSL_Units;
-	float				Geoid_Separation;
-	char				Geoid_Units;
+	//uint8_t			PositionFixIndicator;
+	//uint8_t			SatellitesUsed;
+	//float				HDOP;
+	//float				MSL_Altitude;
+	//char				MSL_Units;
+	//float				Geoid_Separation;
+	//char				Geoid_Units;
+	//
+	//uint16_t		AgeofDiffCorr;
+	//char				DiffRefStationID[4];
+	//char				CheckSum[2];	
 	
-	uint16_t		AgeofDiffCorr;
-	char				DiffRefStationID[4];
-	char				CheckSum[2];	
-	
-}GPGGA_t;
+}gps_t;
 
-typedef struct 
-{
-	uint8_t		rxBuffer[512];
-	uint16_t	rxIndex;
-	uint8_t		rxTmp;	
-	uint32_t	LastTime;	
-	
-	GPGGA_t		GPGGA;
-	
-}GPS_t;
 
-extern GPS_t GPS;
-//##################################################################################################################
-void	GPS_Init(void);
-void	GPS_CallBack(void);
-void	GPS_Process(GPS_t *GPS, uint8_t *rxBuffer);
-//##################################################################################################################
+void	gps_init(void);
+void	gps_CallBack(void);
+void	gps_taskFunction(void);
+gps_t gps_read(void);
+
 
 #endif

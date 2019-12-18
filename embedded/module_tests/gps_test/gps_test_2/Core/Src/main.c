@@ -26,8 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gps.h"
-#include <stdio.h>
-#include <string.h>
+#include "stdio.h"
+#include "string.h"
 #include "stm32f7xx_hal.h"
 
 /* USER CODE END Includes */
@@ -98,63 +98,21 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	
 	
-	uint8_t gps_rx_data[512]={0};
-	
-	UART2Rx_index=0;
-	UART2_Received_Data=0;
-	
-	UART3Rx_index=0;
-	UART3_Received_Data=0;
+
 	printf("GPS test\r\n");
 
-	//set the interrupt for UART3 Rx
-	HAL_UART_Receive_IT(&huart2, &UART2Rx_Buffer_arr[UART2Rx_Buffer_receiving][UART2Rx_index], 1);
-	HAL_UART_Receive_IT(&huart3, &UART3Rx_Buffer[UART3Rx_index], 1);
 	
-	//GPS_Init();
-	printf("Type a message and press enter\r\n");
-
+	
+	gps_init();
+	gps_taskFunction();
+	
 	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-		
-		
-		
-		
-		
-	if(UART2_Received_Data)
-	{UART2_Received_Data=0;
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_0, GPIO_PIN_SET);
-		
-
-			GPS_Process(&GPS, &UART2Rx_Buffer_arr[!UART2Rx_Buffer_receiving][0] );
-		
-		
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_0, GPIO_PIN_RESET);
-
-			//printf("%d$ %s\r\n", UART2Rx_Buffer_receiving, &UART2Rx_Buffer_arr[!UART2Rx_Buffer_receiving][0]);
-					if(GPS.GPGGA.NS_Indicator != '-')
-			{
-				printf("----------------------------------------------\r\n");
-				printf("Latitude: %f %c\r\n",GPS.GPGGA.LatitudeDecimal, GPS.GPGGA.NS_Indicator);
-				printf("Longitude: %f %c\r\n", GPS.GPGGA.LongitudeDecimal, GPS.GPGGA.EW_Indicator);
-				printf("Altitude: %f meters\r\n", GPS.GPGGA.MSL_Altitude);
-			//HAL_Delay(1000);
-			}
-		
-		
-		
-			
-		}			
-	
-		
-		
-
-		
+  {	
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
