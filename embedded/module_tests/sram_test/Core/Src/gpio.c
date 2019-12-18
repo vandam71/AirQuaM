@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : USART.h
+  * File Name          : gpio.c
   * Description        : This file provides code for the configuration
-  *                      of the USART instances.
+  *                      of all used GPIO pins.
   ******************************************************************************
   * @attention
   *
@@ -16,44 +16,41 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __usart_H
-#define __usart_H
-#ifdef __cplusplus
- extern "C" {
-#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "gpio.h"
+/* USER CODE BEGIN 0 */
 
-/* USER CODE BEGIN Includes */
-#include "stdlib.h"
-#include "stdio.h"
-/* USER CODE END Includes */
+/* USER CODE END 0 */
 
+/*----------------------------------------------------------------------------*/
+/* Configure GPIO                                                             */
+/*----------------------------------------------------------------------------*/
+/* USER CODE BEGIN 1 */
 
+/* USER CODE END 1 */
 
-/* USER CODE BEGIN Private defines */
-extern UART_HandleTypeDef huart3;
-/* USER CODE END Private defines */
+/** Configure pins
+*/
+void MX_GPIO_Init(void)
+{
 
-void MX_USART3_UART_Init(void);
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-/* USER CODE BEGIN Prototypes */
-extern int fputc(int, FILE *);
-/* USER CODE END Prototypes */
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
-#ifdef __cplusplus
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
 }
-#endif
-#endif /*__ usart_H */
 
-/**
-  * @}
-  */
+/* USER CODE BEGIN 2 */
 
-/**
-  * @}
-  */
+/* USER CODE END 2 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

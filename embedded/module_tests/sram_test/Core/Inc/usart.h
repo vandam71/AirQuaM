@@ -27,11 +27,10 @@
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-#include "stdlib.h"
 #include "stdio.h"
 /* USER CODE END Includes */
 
-
+extern UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN Private defines */
 extern UART_HandleTypeDef huart3;
@@ -40,7 +39,7 @@ extern UART_HandleTypeDef huart3;
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-extern int fputc(int, FILE *);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
