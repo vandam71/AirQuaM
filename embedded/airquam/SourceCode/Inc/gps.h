@@ -5,6 +5,8 @@
 
 #define GPS_UART_HANDLER  huart2
 
+#define GPS_AVAILABLE_TIMEOUT  60 //in seconds
+
 enum gps_return 
 {
 	GPS_SUCESS=0, 
@@ -40,10 +42,11 @@ typedef struct
 }gps_t;
 
 
-void	gps_init(void);
-void	gps_CallBack(void);
-void	gps_taskFunction(void);
-gps_t gps_read(void);
+void		gps_init(void);
+void		gps_CallBack(void);
+uint8_t gps_available(void);
+gps_t 	gps_read(void);
+void		vGps_taskFunction(void const * argument);
 
 
 #endif

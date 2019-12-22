@@ -30,7 +30,7 @@
 #include "gas.h"
 #include "environment.h"
 #include "airquam.h"
-
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,9 +55,8 @@
 osThreadId iddleTaskHandle;
 osThreadId taskWifiHandle;
 osThreadId taskGpsHandle;
-osThreadId taskGasHandle;
-osThreadId taskEnvironmentHandle;
 osThreadId taskAirquamHandle;
+osThreadId taskMeasurementHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -65,11 +64,10 @@ osThreadId taskAirquamHandle;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-void wifi_taskFunction(void const * argument);
-extern void gps_taskFunction(void const * argument);
-extern void gas_taskFunction(void const * argument);
-extern void environment_taskFunction(void const * argument);
-extern void airquam_taskFunction(void const * argument);
+void vWifi_taskFunction(void const * argument);
+extern void vGps_taskFunction(void const * argument);
+extern void vAirquam_taskFunction(void const * argument);
+extern void vMeasurement_taskFunction(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -105,24 +103,20 @@ void MX_FREERTOS_Init(void) {
   iddleTaskHandle = osThreadCreate(osThread(iddleTask), NULL);
 
   /* definition and creation of taskWifi */
-  osThreadDef(taskWifi, wifi_taskFunction, osPriorityIdle, 0, 128);
+  osThreadDef(taskWifi, vWifi_taskFunction, osPriorityIdle, 0, 128);
   taskWifiHandle = osThreadCreate(osThread(taskWifi), NULL);
 
   /* definition and creation of taskGps */
-  osThreadDef(taskGps, gps_taskFunction, osPriorityNormal, 0, 128);
+  osThreadDef(taskGps, vGps_taskFunction, osPriorityNormal, 0, 128);
   taskGpsHandle = osThreadCreate(osThread(taskGps), NULL);
 
-  /* definition and creation of taskGas */
-  osThreadDef(taskGas, gas_taskFunction, osPriorityNormal, 0, 128);
-  taskGasHandle = osThreadCreate(osThread(taskGas), NULL);
-
-  /* definition and creation of taskEnvironment */
-  osThreadDef(taskEnvironment, environment_taskFunction, osPriorityNormal, 0, 128);
-  taskEnvironmentHandle = osThreadCreate(osThread(taskEnvironment), NULL);
-
   /* definition and creation of taskAirquam */
-  osThreadDef(taskAirquam, airquam_taskFunction, osPriorityNormal, 0, 128);
+  osThreadDef(taskAirquam, vAirquam_taskFunction, osPriorityNormal, 0, 1024);
   taskAirquamHandle = osThreadCreate(osThread(taskAirquam), NULL);
+
+  /* definition and creation of taskMeasurement */
+  osThreadDef(taskMeasurement, vMeasurement_taskFunction, osPriorityNormal, 0, 128);
+  taskMeasurementHandle = osThreadCreate(osThread(taskMeasurement), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -140,10 +134,7 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void const * argument)
 {
     
-    
-    
-    
-    
+
     
     
 
@@ -151,27 +142,27 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
 }
 
-/* USER CODE BEGIN Header_wifi_taskFunction */
+/* USER CODE BEGIN Header_vWifi_taskFunction */
 /**
 * @brief Function implementing the taskWifi thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_wifi_taskFunction */
-void wifi_taskFunction(void const * argument)
+/* USER CODE END Header_vWifi_taskFunction */
+void vWifi_taskFunction(void const * argument)
 {
-  /* USER CODE BEGIN wifi_taskFunction */
+  /* USER CODE BEGIN vWifi_taskFunction */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
-  /* USER CODE END wifi_taskFunction */
+  /* USER CODE END vWifi_taskFunction */
 }
 
 /* Private application code --------------------------------------------------*/

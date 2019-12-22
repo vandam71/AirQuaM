@@ -42,6 +42,14 @@
 	#define SSD1306_I2C_ADDR        (0x3C << 1)
 	#endif
 
+	#ifndef SSD1306_Reset_Port
+	#define SSD1306_Reset_Port      GPIOE
+	#endif
+	
+	#ifndef SSD1306_Reset_Pin
+	#define SSD1306_Reset_Pin       GPIO_PIN_3
+	#endif
+
 	extern I2C_HandleTypeDef SSD1306_I2C_PORT;
 /* ^^^ I2C config ^^^ */
 
@@ -115,6 +123,7 @@ void ssd1306_Init(void);
 void ssd1306_Fill(SSD1306_COLOR color);
 void ssd1306_UpdateScreen(void);
 void ssd1306_DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color);
+void ssd1306_drawIcon(FontDef Icon, SSD1306_COLOR color);
 char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color);
 char ssd1306_WriteString(char* str, FontDef Font, SSD1306_COLOR color);
 void ssd1306_SetCursor(uint8_t x, uint8_t y);

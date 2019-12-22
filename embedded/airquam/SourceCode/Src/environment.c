@@ -19,7 +19,7 @@ void environment_init(void)
   * @brief  read all gases
   * @retval gas_t object with all measurements
   */
-environment_t read_environment(void)
+environment_t environment_read(void)
 {
 	environment_t environment;
 	
@@ -35,7 +35,7 @@ environment_t read_environment(void)
   * @brief  read temperature
   * @retval temperature
   */
-float readT(void)
+float environment_readT(void)
 {	
 	return hdc1080_measureT();
 }
@@ -44,7 +44,7 @@ float readT(void)
   * @brief  humidity
   * @retval humidity
   */
-float readRH(void)
+float environment_readRH(void)
 {
 	return hdc1080_measureRH();
 }

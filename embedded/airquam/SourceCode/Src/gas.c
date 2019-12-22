@@ -34,16 +34,15 @@ void gas_init(void)
   * @brief  read all gases
   * @retval gas_t object with all measurements
   */
-gas_t read_gas(void)
+gas_t gas_read(void)
 {
 	gas_t gas;
 	
-	gas.NO2 	= readNO2();
-	gas.CO 		= readCO();
+	gas.NO2 	= gas_readNO2();
+	gas.CO 		= gas_readCO();
 	ccs811_measure_CO2_TVOC(&gas.CO2, &gas.TVOC);
 	gas.CO2 	= fast_average(&avrCO2, gas.CO2);
 	gas.TVOC 	= fast_average(&avrTVOC, gas.TVOC);
-	
 	
 	return gas;
 }
@@ -52,7 +51,7 @@ gas_t read_gas(void)
   * @brief  read NO2 gas
   * @retval filtered value of NO2 measurement
   */
-uint32_t readNO2(void)
+uint32_t gas_readNO2(void)
 {	
 	return fast_average(&avrNO2, mics4514_measureNO2() );
 }
@@ -61,7 +60,7 @@ uint32_t readNO2(void)
   * @brief  read CO gas
   * @retval filtered value of CO measurement
   */
-uint32_t readCO(void)
+uint32_t gas_readCO(void)
 {
 	return fast_average(&avrCO, mics4514_measureCO() );
 }
@@ -70,7 +69,7 @@ uint32_t readCO(void)
   * @brief  read CO2 gas
   * @retval filtered value of CO2 measurement
   */
-uint32_t readCO2(void)
+uint32_t gas_readCO2(void)
 {
 	return fast_average(&avrCO2, ccs811_measureCO2() );
 }
@@ -79,7 +78,7 @@ uint32_t readCO2(void)
   * @brief  read TVOC gas
   * @retval filtered value of TVOC measurement
   */
-uint32_t readTVOC(void)
+uint32_t gas_readTVOC(void)
 {
 	return fast_average(&avrTVOC, ccs811_measureTVOC() );
 }

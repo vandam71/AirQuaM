@@ -4,7 +4,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-	#include "stm32f7xx_hal.h"
+	#include "stdint.h"
 	
 	#define MICS4514_NOX_R0 1022	//Reference resistance for the NO2 sensing element
 	#define MICS4514_RED_R0 1000000	//Reference resistance for the NO2 sensing element

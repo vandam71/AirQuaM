@@ -4,7 +4,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-	#include "stm32f7xx_hal.h"
+	#include "stdint.h"
 	#include "i2c.h"
 	
 	#define CCS811_I2C_ADDR 		0x5A
@@ -60,7 +60,7 @@
 	uint32_t	ccs811_measureCO2(void);
 	uint32_t	ccs811_measureTVOC(void);
 	void 			ccs811_measure_CO2_TVOC(uint32_t *co2, uint32_t *tvoc);
-	void			ccs811_temp_rh_compensation(float, float);
+	void		ccs811_temp_rh_compensation(float, float);
 
 #ifdef __cplusplus
 }

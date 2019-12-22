@@ -13,5 +13,7 @@ typedef struct {
 extern FontDef Font_7x10;
 extern FontDef Font_11x18;
 extern FontDef Font_16x26;
+extern FontDef Icon_satellite;
+extern FontDef Icon_wlan;
 
 #endif // __SSD1306_FONTS_H__

@@ -142,6 +142,99 @@ void ssd1306_TestAll() {
     ssd1306_TestBorder();
     ssd1306_TestFonts();
 }
+
+
+
+void ssd1306_Testairquam1() {
+
+	ssd1306_Fill(Black);
+	
+
+	
+  ssd1306_SetCursor(4, 2);
+	ssd1306_WriteString("    23:59:59", Font_7x10, White);
+	
+	ssd1306_SetCursor(0, 24); ssd1306_WriteString("   NO2: 0.45ppm", Font_7x10, White);
+	ssd1306_SetCursor(0, 34); ssd1306_WriteString("    CO: 50ppm", Font_7x10, White);
+	ssd1306_SetCursor(0, 44); ssd1306_WriteString("   CO2: 600ppm", Font_7x10, White);
+	ssd1306_SetCursor(0, 54); ssd1306_WriteString("  TVOC: 600ppb", Font_7x10, White);
+	
+	ssd1306_SetCursor(113, 0);
+	ssd1306_drawIcon(Icon_wlan, White);
+	
+	ssd1306_SetCursor(96, 0);
+	ssd1306_drawIcon(Icon_satellite, White);
+	
+	for(int i=0; i<20; i++)
+		for(int j=0; j<11; j++)
+			ssd1306_DrawPixel(i, j, White);
+			
+	ssd1306_SetCursor(4, 2);
+	ssd1306_WriteString("ON", Font_7x10, Black);
+	for(int i=0; i<=20; i++)	{
+		ssd1306_DrawPixel(i, 0, White);
+		ssd1306_DrawPixel(i, 11, White);
+	}
+	for(int i=0; i<=11; i++)	{
+		ssd1306_DrawPixel(20, i, White);
+		ssd1306_DrawPixel(0, i, White);
+	}
+
+    ssd1306_UpdateScreen();
+	
+	
+}
+
+void ssd1306_Testairquam2() {
+	
+	ssd1306_Fill(Black);
+	
+  ssd1306_SetCursor(4, 2);
+	ssd1306_WriteString("   31-12-2019", Font_7x10, White);
+
+
+	ssd1306_SetCursor(0, 24); ssd1306_WriteString("T: 25'C   RH: 50%", Font_7x10, White);
+	ssd1306_SetCursor(0, 34); ssd1306_WriteString("    Ts: 5 s", Font_7x10, White);
+	ssd1306_SetCursor(0, 44); ssd1306_WriteString(" N  90.12345678", Font_7x10, White);
+	ssd1306_SetCursor(0, 54); ssd1306_WriteString(" W 180.12345678", Font_7x10, White);
+	
+	
+	ssd1306_SetCursor(113, 0);
+	ssd1306_drawIcon(Icon_wlan, White);
+	
+	ssd1306_SetCursor(96, 0);
+	ssd1306_drawIcon(Icon_satellite, White);
+	
+
+	
+			
+	ssd1306_SetCursor(0, 2);
+	ssd1306_WriteString("OFF", Font_7x10, White);
+	for(int i=0; i<=20; i++)	{
+		ssd1306_DrawPixel(i, 0, White);
+		ssd1306_DrawPixel(i, 11, White);
+	}
+	for(int i=0; i<=11; i++)	{
+		ssd1306_DrawPixel(20, i, White);
+		ssd1306_DrawPixel(0, i, White);
+	}
+
+  ssd1306_UpdateScreen();
+	
+}
+
+void ssd1306_Testsplash() {
+	
+	ssd1306_Fill(Black);
+
+  ssd1306_SetCursor(8, 18);
+	ssd1306_WriteString("AirQuaM12345", Font_16x26, White);
+
+	
+
+  ssd1306_UpdateScreen();
+	
+}
 /* USER CODE END 0 */
 
 /**
@@ -177,14 +270,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 		HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_SET);
-	  ssd1306_TestAll();
+	  //ssd1306_TestAll();
+		
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	ssd1306_Init();
+	ssd1306_Testsplash();
+	HAL_Delay(1000);
   while (1)
   {
+		ssd1306_Testairquam1();
+		HAL_Delay(5000);
+		ssd1306_Testairquam2();
+		HAL_Delay(5000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

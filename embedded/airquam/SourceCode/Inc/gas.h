@@ -4,14 +4,14 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-	#include "stm32f7xx_hal.h"
+	#include "stdint.h"
 	
 	#define MICS4514_NOX_R0 1022	//Reference resistance for the NO2 sensing element
 	#define MICS4514_RED_R0 1000000	//Reference resistance for the NO2 sensing element
 	
 	#define MICS4514_NOX_PREHEAT 1	//seconds for preheating the NO2 sensing element
 	
-	typedef struct gas
+	typedef struct
 	{
 		uint32_t NO2;			//in ppb
 		uint32_t CO;			//in ppb
@@ -21,12 +21,12 @@
 	
 	
 	
-	void gas_init(void);
-	gas_t read_gas(void);
-	uint32_t readNO2(void);
-	uint32_t readCO(void);
-	uint32_t readCO2(void);
-	uint32_t readTVOC(void);
+	void 			gas_init(void);
+	gas_t 		gas_read(void);
+	uint32_t	gas_readNO2(void);
+	uint32_t	gas_readCO(void);
+	uint32_t	gas_readCO2(void);
+	uint32_t	gas_readTVOC(void);
 	
 
 #ifdef __cplusplus

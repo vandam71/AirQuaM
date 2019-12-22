@@ -21,7 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "stdio.h"
+#include "airquam.h"
+#include "gps.h"
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart4;
@@ -234,7 +236,18 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+int fputc(int ch, FILE *f){	//redefine fputc for printf
+	HAL_UART_Transmit(&huart3, (uint8_t*)&ch, 1, 100);
+	return ch;
+}
 
+//implemantation of UART ISR
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart){
+	if (huart->Instance == GPS_UART_HANDLER.Instance)
+	{
+		gps_CallBack(); 
+	}
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

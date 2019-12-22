@@ -22,7 +22,8 @@
 	
 	
 	void measurement_init(void);
-	measurement_t measure (char);
+	measurement_t measure(void);
+	void vMeasurement_taskFunction(void const * argument);
 	
 	
 

@@ -1,6 +1,7 @@
 #include "ccs811.h"
 #include "i2c.h"
-#include "stdio.h"
+#include "cmsis_os.h"
+
 /**
   * @brief  initialization process for the ccs811 sensor
   * @retval None

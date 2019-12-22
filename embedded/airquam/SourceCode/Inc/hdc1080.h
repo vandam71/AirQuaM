@@ -4,7 +4,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-	#include "stm32f7xx_hal.h"
+	#include "stdint.h"
 	#include "i2c.h"
 	
 	#define HDC1080_I2C_ADDR			0x40
@@ -24,7 +24,7 @@
 	#define	HEAT				0x0D			//heater to 
 	#define	MODE				0x0C
 	#define	BTST				0x0B
-	#define	TRES(X)			(( X&0x3 )<<10)
+	#define	TRES(X)			(( X&0x1 )<<10)
 	#define	TRES_14BIT	0x0
 	#define	TRES_11BIT	0x1
 	#define	HRES(X)			(( X&0x3 )<<8)

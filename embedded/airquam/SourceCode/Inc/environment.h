@@ -15,9 +15,9 @@
 	
 	
 	void environment_init(void);
-	environment_t read_environment(void);
-	float readT(void);
-	float readRH(void);
+	environment_t environment_read(void);
+	float environment_readT(void);
+	float environment_readRH(void);
 	
 
 #ifdef __cplusplus

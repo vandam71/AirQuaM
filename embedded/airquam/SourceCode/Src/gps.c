@@ -1,28 +1,19 @@
-#include "GPS.h"
+#include "gps.h"
 #include "usart.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "cmsis_os.h"
 
+static volatile gps_t gps;
+static volatile uint8_t gps_availability = 0;
 
-gps_t gps;
+static uint8_t buff_arr[2][512]={0};					//declare two buffers
+static volatile uint8_t buff_index=0;					//
+static volatile uint8_t buff_receiving = 0;		//which buffer is receiveing
 
-uint8_t buff_arr[2][512]={0};					//declare two buffers
-volatile uint8_t buff_index=0;				//
-volatile uint8_t buff_receiving = 0;	//which buffer is receiveing
-volatile uint8_t received_data=0;				//data available
-
-//SemaphoreHandle_t xGpsSemaphore = NULL;
-
-/**
-  * @brief  get method for the gps module
-  * @retval gps_t object
-  */
-gps_t gps_read(void)
-{
-	return gps;
-}
+extern TaskHandle_t taskGpsHandle;	//handler for the gps task
 
 /**
   * @brief  convert the gps NMEA format to degrees
@@ -41,45 +32,6 @@ float convertDegMinToDecDeg (float degMin)
   decDeg = degMin + ( min / 60 );
  
   return decDeg;
-}
-
-/**
-  * @brief  init function for gps molude
-  * @retval None
-  */
-void	gps_init(void)
-{
-	buff_index=0;
-	buff_receiving=0;
-	received_data=0;
-	HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
-	
-	//xSemaphore = xSemaphoreCreateMutex();
-	
-}
-
-/**
-  * @brief  uart callback routine
-  * @retval None
-  */
-void	gps_CallBack(void)
-{
-		if(buff_arr[buff_receiving][buff_index] == '\n')
-		{
-			buff_arr[buff_receiving][buff_index+1] = '\0';
-			buff_receiving = !buff_receiving;
-			received_data = 1;			//give semaphore here
-			//xSemaphoreGiveFromISR(xGpsSemaphore);
-			buff_index = 0;
-		}
-		else if(buff_arr[buff_receiving][buff_index] == '\r');
-		else
-		{
-			buff_index++;
-			buff_index &= ~(1<<7); //keep inside the limits
-		}
-		//set the interrups for UART3 Rx again
-		HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
 }
 
 /**
@@ -116,30 +68,90 @@ char gps_process(gps_t *my_gps, uint8_t *rxBuffer)
 }
 
 /**
+  * @brief  init function for gps molude
+  * @retval None
+  */
+void	gps_init(void)
+{
+	buff_index=0;
+	buff_receiving=0;
+	gps_availability=0;
+	HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
+
+}
+
+/**
+  * @brief  uart callback routine
+  * @retval None
+  */
+void	gps_CallBack(void)
+{
+		if(buff_arr[buff_receiving][buff_index] == '\n')		//end of line
+		{
+			buff_arr[buff_receiving][buff_index+1] = '\0';
+			buff_receiving = !buff_receiving; //switch buffer
+			buff_index = 0;
+			
+			// notification give (binnary semaphore like)
+			//vTaskNotifyGiveFromISR( taskGpsHandle, NULL );
+		
+		}
+		else if(buff_arr[buff_receiving][buff_index] == '\r');
+		else																								//new char
+		{
+			buff_index++;
+			buff_index &= ~(1<<7); //keep inside the limits
+		}
+		//set the interrups for UART3 Rx again
+		HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
+}
+
+/**
+  * @brief  check if a recent valid gps position has been received
+	* @retval availability state (1: yes, 0: no)
+  */
+uint8_t gps_available(void)
+{
+	return gps_availability;
+}
+
+/**
+  * @brief  get method for the gps module
+  * @retval gps_t object
+  */
+gps_t gps_read(void)
+{
+	return gps;
+}
+
+/**
   * @brief  task function for the gps task
   * @retval None
   */
-void	gps_taskFunction(void)
+void vGps_taskFunction(void const * argument)
 {
-	//if( xSemaphoreTake( xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
-	//xSemaphoreGive( xSemaphore );
-	
 	gps_t my_gps;
-	while (1)
+	static uint32_t last_gps_tick=0; //in ms
+			printf("hellogps \n");
+  /* Infinite loop */
+	for(;;)
   {
-		if(received_data)	// semaphore take
-		{
-			received_data=0;
+		// notification take (binnary semaphore like)
+		ulTaskNotifyTake( pdTRUE, pdMS_TO_TICKS(1000) );  
 
-			if ( gps_process(&my_gps, &buff_arr[!buff_receiving][0]) == GPS_SUCESS)
-			{
-				gps = my_gps;
-				printf("----------------------------------------------\r\n");
-				printf("Latitude: %f \r\n",gps.latitude);
-				printf("Longitude: %f \r\n", gps.longitude);
-			}
-		}			
+		if ( gps_process(&my_gps, &buff_arr[!buff_receiving][0]) == GPS_SUCESS) //process data
+		{
+			gps = my_gps;
+			gps_availability = 1;
+			last_gps_tick = HAL_GetTick();		//reset timeout if gps is available
+		}
+		else																//if the timeout exeeds, set availability accordingly
+			if( gps_availability )				
+				if( (HAL_GetTick()-last_gps_tick) > (GPS_AVAILABLE_TIMEOUT*HAL_GetTickFreq()*1000) )
+					gps_availability = 0;
+
   }
+	
 }
 
 

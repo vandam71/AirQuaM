@@ -1,5 +1,5 @@
 #include "mics4514.h"
-#include "stm32f7xx_hal.h"
+#include "stdint.h"
 #include "gpio.h"
 #include "adc.h"
 #include "math.h"
@@ -24,7 +24,7 @@ void mics4514_init(void)
   * @brief  read the analog NO2 value and calculate the ppb value
   * @retval NO2 concentration in ppb
   */
-uint32_t measureNO2(void)
+uint32_t mics4514_measureNO2(void)
 {	
 	uint32_t adc_value, result;
 	double voltage, Rs, ppb;
@@ -48,7 +48,7 @@ uint32_t measureNO2(void)
   * @brief  read the analog CO value and calculate the ppb value
   * @retval CO concentration in ppb
   */
-uint32_t measureCO(void)
+uint32_t mics4514_measureCO(void)
 {
 	uint32_t adc_value, result;
 	double voltage, Rs, ppb;
