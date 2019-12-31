@@ -1,0 +1,5 @@
+{
+    "name": "TestStation",
+    "sampleRate": 100,
+    "activeSensors": 10
+}

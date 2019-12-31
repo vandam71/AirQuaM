@@ -1,0 +1,17 @@
+[
+    {
+        "measurementID": 1,
+        "stationID": 1,
+        "time": "16:35:00",
+        "date": "2010-10-01",
+        "GPSlatitude": 38.99000168,
+        "GPSlongitude": -9.98999977,
+        "ZoneID": 1,
+        "NO2": 10,
+        "CO": 20,
+        "CO2": 15,
+        "TVOC": 40,
+        "Temperature": 10,
+        "Humidity": 80
+    }
+]

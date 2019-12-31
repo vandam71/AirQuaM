@@ -1,0 +1,6 @@
+{
+    "stationID": 2,
+    "name": "TestStation",
+    "sampleRate": 100,
+    "activeSensors": 10
+}
