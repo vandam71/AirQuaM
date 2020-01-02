@@ -11,6 +11,7 @@ router.get('/station', function (req, res) {
         res.send(result);
     });
 });
+
 router.get('/station/:id', function (req, res) {
     stationID = parseInt(req.params.id)
     connection.query("SELECT * FROM Station WHERE stationID=" + stationID, function (err, result) {
