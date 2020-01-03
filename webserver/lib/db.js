@@ -1,17 +1,22 @@
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '1234',
-    database: 'airquam',
+var connection = mysql.createPool({
+    host: 'eu-cdbr-west-02.cleardb.net',
+    user: 'b6b35d28509c7a',
+    password: 'e5c4c077',
+    database: 'heroku_d7884420be88c67',
     dateStrings: true
 });
 
-connection.connect(function (error) {
-    if (!!error) {
-        console.log(error);
-    } else {
-        console.log('Connected to the database!');
-    }
+connection.on('connection', function (connection) {
+    console.log('DB Connection established');
+
+    connection.on('error', function (err) {
+        console.error(new Date(), 'MySQL error', err.code);
+    });
+
+    connection.on('close', function (err) {
+        console.error(new Date(), 'MySQL close', err)
+    });
 });
+
 module.exports = connection;
