@@ -4,16 +4,18 @@ from mysql.connector import errorcode
 
 
 class MySQLdb:
-    def __init__(self):
+    def __init__(self, user, password, database):
         self.db = None
+        self.user = user
+        self.password = password
+        self.database = database
 
-    def start_connection(self, user, password, database):
-        """
-        Start mysql connection
+    def start_connection(self):
+        """Start mysql connection
         :return: itself
         """
         try:
-            self.db = connector.connect(user=user, password=password, database=database)
+            self.db = connector.connect(user=self.user, password=self.password, database=self.database)
         except connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
@@ -24,7 +26,12 @@ class MySQLdb:
         return self
 
     def read_db(self, query):
+        """Read from a database
+        :param query: MySQL database query
+        :return: string in the form of pandas data frame
+        """
         return pd.read_sql(query, self.db)
 
     def close_connection(self):
+        """Close connection to the database"""
         self.db.close()

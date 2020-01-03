@@ -15,10 +15,9 @@ class Data:
         self.rh = []
 
     def initialize(self, drop=True, sort=True):
-        """
-        Initialize the data
+        """Initialize the data
         :param drop: drop unnecessary columns
-        :param sort: sort the dataset by datetime
+        :param sort: sort the data set by datetime
         :return: itself
         """
         if drop:
@@ -37,8 +36,7 @@ class Data:
         return self
 
     def split(self):
-        """
-        Convert every column to numpy array and split it
+        """Convert every column to numpy array and split it
         :return: itself
         """
         self.no2 = self.df['NO2'].values.reshape(-1, 1)

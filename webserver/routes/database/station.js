@@ -47,7 +47,7 @@ router.put('/station', function (req, res) {
             res.send("No Matching ID");
         }
         else {
-            connection.query("UPDATE Station SET name='" + req.body.name + "' WHERE stationID=" + req.body.stationID, function (err, result, fields) {
+            connection.query("UPDATE Station SET name='" + req.body.name + "', sampleRate='" + req.body.sampleRate + "', activeSensors='" + req.body.activeSensors + "' WHERE stationID=" + req.body.stationID, function (err, result, fields) {
                 if (err) {
                     console.log(err);
                 }
@@ -68,21 +68,35 @@ router.delete('/station', function (req, res) {
         if (err) {
             console.error(err);
         }
-        if (result.length == 0) {
+        else if (result.length == 0) {
             res.send("No Matching ID");
         }
         else {
-            connection.query("DELETE FROM Station WHERE stationID=" + req.body.stationID, function (err, result) {
-                if (err) {
-                    console.log(err);
+            connection.query("SELECT *FROM Measurement WHERE stationID=" + req.body.stationID, function (err, result) {
+                if (err){
+                    console.error(err);
                 }
-                connection.query("SELECT * FROM Station", function (err, result) {
-                    if (err) {
-                        console.error(err);
-                    }
-                    res.send(result);
-                });
-            });
+                else if (result.length == 0){
+                    connection.query("DELETE FROM Station WHERE stationID=" + parseInt(req.body.stationID), function (err, result) {
+                        if (err) {
+                            if (err.errno == 1451) {
+                                console.error(err.message)
+                                res.send(err)
+                            } else
+                                console.error(err);
+                        }
+                        connection.query("SELECT * FROM Station", function (err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            res.send(result);
+                        });
+                    });
+                }
+                else
+                    res.send(403)
+            })
+            
         };
     });
 })

@@ -3,3 +3,5 @@ npm-debug.log
 .vscode
 prediction/venv/
 cypress/
+prediction/.idea
+prediction/core/__pychache__
