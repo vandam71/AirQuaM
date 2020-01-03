@@ -18,6 +18,9 @@ var zoneRouter = require('./routes/database/zone');
 var stationRouter = require('./routes/database/station');
 var measurementRouter = require('./routes/database/measurement');
 
+//python
+var python = require('./routes/python')
+
 //app definition
 var app = express();
 
@@ -48,6 +51,9 @@ app.use('/info', dynamicStationRouter);
 app.use('/data', zoneRouter);
 app.use('/data', stationRouter);
 app.use('/data', measurementRouter);
+
+//python route
+app.use('/', python);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

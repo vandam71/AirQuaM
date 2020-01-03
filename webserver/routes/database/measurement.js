@@ -14,7 +14,6 @@ router.post('/measurement', function (req, res) {
             console.error(err.message);
         }
         exists = result[0].value;
-        console.log(exists);
         if (exists == 0) {
             console.log("here");
             connection.query("INSERT INTO Zone (ZoneLatitude, ZoneLongitude) VALUES ('" + Latitude + "', '" + Longitude + "')", function (err, result) {
