@@ -2,24 +2,35 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../../lib/db');
 
-router.get('/station/:id', function (req, res) {
-    connection.query("SELECT * FROM Station WHERE StationID=" + parseInt(req.params.id), function (err, result) {
+router.get('/station/:id', function(req, res) {
+    connection.query("SELECT COUNT(*) AS value FROM Station WHERE stationID=" + parseInt(req.params.id), function(err, result) {
         if (err) {
-            console.log(err);
+            console.error(err.message);
+            res.send(400);
         } else {
-            var station = {
-                'stationID': result[0].stationID,
-                'name': result[0].name,
-                'sampleRate': result[0].sampleRate,
-                'activeSensors': result[0].activeSensors
-            }
-            res.render('stationinfo', {station})
+            exists = result[0].value;
+            if (exists != 0) {
+                connection.query("SELECT * FROM Station WHERE StationID=" + parseInt(req.params.id), function(err, result) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        var station = {
+                            'stationID': result[0].stationID,
+                            'name': result[0].name,
+                            'sampleRate': result[0].sampleRate,
+                            'activeSensors': result[0].activeSensors
+                        }
+                        res.render('stationinfo', { station })
+                    }
+                });
+            } else
+                res.render('error', { "error": 404 });
         }
-    })
+    });
 })
 
-router.post('/station/:id', function (req, res){
-    connection.query("UPDATE Station SET name='" + req.body.stationName + "', sampleRate='" + parseInt(req.body.sampleRate) + "', activeSensors='" + parseInt(req.body.activeSensors) + "' WHERE stationID=" + parseInt(req.params.id), function (err, result, fields) {
+router.post('/station/:id', function(req, res) {
+    connection.query("UPDATE Station SET name='" + req.body.stationName + "', sampleRate='" + parseInt(req.body.sampleRate) + "', activeSensors='" + parseInt(req.body.activeSensors) + "' WHERE stationID=" + parseInt(req.params.id), function(err, result, fields) {
         if (err) {
             console.log(err);
         }
@@ -27,8 +38,8 @@ router.post('/station/:id', function (req, res){
     });
 })
 
-router.post('/station/:id/delete', function (req, res){
-    connection.query("DELETE FROM Station WHERE stationID=" + parseInt(req.params.id), function (err, result) {
+router.post('/station/:id/delete', function(req, res) {
+    connection.query("DELETE FROM Station WHERE stationID=" + parseInt(req.params.id), function(err, result) {
         if (err) {
             console.log(err);
         }

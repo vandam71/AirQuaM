@@ -42,3 +42,5 @@ CREATE TABLE IF NOT EXISTS Measurement(
     FOREIGN KEY (stationID) REFERENCES Station(stationID),
     FOREIGN KEY (ZoneID) REFERENCES Zone(ZoneID)
 );
+
+SET @@auto_increment_increment=1;
