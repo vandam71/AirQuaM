@@ -1,160 +1,194 @@
 <% include partials/header.ejs %>
-<!-- CODE FROM HERE -->
-<h1>Zone <%= zoneInfo.ZoneID%></h1>
-<h2>Latitude <%= zoneInfo.ZoneLatitude%> Longitude <%= zoneInfo.ZoneLongitude%></h2>
-<div class="grid-container">
-    <div class="itemtable" style="height: 240px; overflow: auto; width: auto;">
-        <table>
-            <tr>
-                <td><strong>ID</strong></td>
-                <td><strong>Station ID</strong></td>
-                <td><strong>Time</strong></td>
-                <td><strong>Date</strong></td>
-                <td><strong>GPS Latitude</strong></td>
-                <td><strong>GPS Longitude</strong></td>
-                <td><strong>NO2 (ppm)</strong></td>
-                <td><strong>CO (ppm)</strong></td>
-                <td><strong>CO2 (ppm)</strong></td>
-                <td><strong>TVOC (ppm)</strong></td>
-                <td><strong>Temperature (ºC)</strong></td>
-                <td><strong>Humidity (%)</strong></td>
-            </tr>
-            <% for(var i=0; i<batch.length; i++) {%>
-            <tr>
-                <td><%= batch[i].measurementID%></td>
-                <td><%= batch[i].stationID%></td>
-                <td id="time<%=i%>"><%= batch[i].time%></td>
-                <td id="date<%=i%>"><%= batch[i].date%></td>
-                <td><%= batch[i].GPSlatitude%></td>
-                <td><%= batch[i].GPSlongitude%></td>
-                <td id="no<%=i%>"><%= batch[i].NO2%></td>
-                <td id="co<%=i%>"><%= batch[i].CO%></td>
-                <td id="eco<%=i%>"><%= batch[i].CO2%></td>
-                <td id="tvoc<%=i%>"><%= batch[i].TVOC%></td>
-                <td id="temp<%=i%>"><%= batch[i].Temperature%></td>
-                <td id="rh<%=i%>"><%= batch[i].Humidity%></td>
-            </tr>
-            <% } %>
-        </table>
+    <!-- CODE FROM HERE -->
+    <button id="btn2" onclick="window.location.reload()">Refresh</button>
+    <h1>Zone
+        <%= zoneInfo.ZoneID%>
+    </h1>
+    <h2>Latitude
+        <%= zoneInfo.ZoneLatitude%> Longitude
+            <%= zoneInfo.ZoneLongitude%>
+    </h2>
+    <div class="grid-container">
+        <div class="itemtable" style="height: 240px; overflow: auto; width: auto;">
+            <table>
+                <tr>
+                    <td><strong>ID</strong></td>
+                    <td><strong>Station ID</strong></td>
+                    <td><strong>Time</strong></td>
+                    <td><strong>Date</strong></td>
+                    <td><strong>GPS Latitude</strong></td>
+                    <td><strong>GPS Longitude</strong></td>
+                    <td><strong>NO2 (ppm)</strong></td>
+                    <td><strong>CO (ppm)</strong></td>
+                    <td><strong>CO2 (ppm)</strong></td>
+                    <td><strong>TVOC (ppm)</strong></td>
+                    <td><strong>Temperature (ºC)</strong></td>
+                    <td><strong>Humidity (%)</strong></td>
+                </tr>
+                <% for(var i=0; i<batch.length; i++) {%>
+                    <tr>
+                        <td>
+                            <%= batch[i].measurementID%>
+                        </td>
+                        <td>
+                            <%= batch[i].stationID%>
+                        </td>
+                        <td id="time<%=i%>">
+                            <%= batch[i].time%>
+                        </td>
+                        <td id="date<%=i%>">
+                            <%= batch[i].date%>
+                        </td>
+                        <td>
+                            <%= batch[i].GPSlatitude%>
+                        </td>
+                        <td>
+                            <%= batch[i].GPSlongitude%>
+                        </td>
+                        <td id="no<%=i%>">
+                            <%= batch[i].NO2%>
+                        </td>
+                        <td id="co<%=i%>">
+                            <%= batch[i].CO%>
+                        </td>
+                        <td id="eco<%=i%>">
+                            <%= batch[i].CO2%>
+                        </td>
+                        <td id="tvoc<%=i%>">
+                            <%= batch[i].TVOC%>
+                        </td>
+                        <td id="temp<%=i%>">
+                            <%= batch[i].Temperature%>
+                        </td>
+                        <td id="rh<%=i%>">
+                            <%= batch[i].Humidity%>
+                        </td>
+                    </tr>
+                    <% } %>
+            </table>
+        </div>
+        <div class="itemchart" id="chart" style="width: auto; height: auto;"></div>
+        <div class="itemmap" id="map" style="width: auto; height: 380px;"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
     </div>
-    <div class="itemchart" id="chart" style="width: auto; height: auto;"></div>
-    <div class="itemmap" id="map" style="width: auto; height: 380px;"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-    <div class="item"></div>
-</div>
-<script>
-    function initMap() {
-        var lat = parseFloat(<%= zoneInfo.ZoneLatitude %>);
-        var lng = parseFloat(<%= zoneInfo.ZoneLongitude %>);
+    <script>
+        function initMap() {
+            var lat = parseFloat(<%= zoneInfo.ZoneLatitude %>);
+            var lng = parseFloat(<%= zoneInfo.ZoneLongitude %>);
 
-        var center = { lat: lat, lng: lng };
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 14,
-            center: center,
-            mapTypeId: 'satellite'
-        });
+            var center = {
+                lat: lat,
+                lng: lng
+            };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 14,
+                center: center,
+                mapTypeId: 'satellite'
+            });
 
-        var markerC = new google.maps.Marker({
-            map: map,
-            position: center,
-            icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
-        })
+            var markerC = new google.maps.Marker({
+                map: map,
+                position: center,
+                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+            })
 
-        var infowindow = new google.maps.InfoWindow({
-            content: "Zone " + <%= zoneInfo.ZoneID %>
-        });
+            var infowindow = new google.maps.InfoWindow({
+                content: "Zone " + <%= zoneInfo.ZoneID %>
+            });
 
-        google.maps.event.addListener(markerC, 'click', (function () {
-            infowindow.open(map, markerC);
-        }));
+            google.maps.event.addListener(markerC, 'click', (function() {
+                infowindow.open(map, markerC);
+            }));
 
-        markerC.setMap(map);
+            markerC.setMap(map);
 
-        <% for (var i = 0; i < batch.length; i++) { %>
+            <% for (var i = 0; i < batch.length; i++) { %>
             var marker = new google.maps.Marker({
-            map: map,
-            position: {
-                lat: parseFloat(<%= batch[i].GPSlatitude %>),
-                lng: parseFloat(<%= batch[i].GPSlongitude %>),
-            },
-        });
+                map: map,
+                position: {
+                    lat: parseFloat(<%= batch[i].GPSlatitude %>),
+                    lng: parseFloat(<%= batch[i].GPSlongitude %>),
+                },
+            });
             marker.setMap(map);
-        <% } %>;
-    }
-</script>
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClIURvk2YvL89LjCcv2-HS9FQzvOLqBdM&callback=initMap">
+            <% } %>;
+        }
     </script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    //google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.load('current', { 'packages': ['line'] });
-    google.charts.setOnLoadCallback(drawChart);
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClIURvk2YvL89LjCcv2-HS9FQzvOLqBdM&callback=initMap">
+    </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        //google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.load('current', {
+            'packages': ['line']
+        });
+        google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
+        function drawChart() {
 
-        var total = <%= batch.length %>;
+            var total = <%= batch.length %>;
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('datetime', 'Date');
-        data.addColumn('number', 'NO2');
-        data.addColumn('number', 'CO');
-        data.addColumn('number', 'CO2');
-        data.addColumn('number', 'TVOC');
-        data.addColumn('number', 'Temperature');
-        data.addColumn('number', 'Humidity');
+            var data = new google.visualization.DataTable();
+            data.addColumn('datetime', 'Date');
+            data.addColumn('number', 'NO2');
+            data.addColumn('number', 'CO');
+            data.addColumn('number', 'CO2');
+            data.addColumn('number', 'TVOC');
+            data.addColumn('number', 'Temperature');
+            data.addColumn('number', 'Humidity');
 
-        for (var i = 0; i < total; i++) {
-            var no2 = parseInt(document.getElementById("no" + i).innerHTML);
-            var co = parseInt(document.getElementById("co" + i).innerHTML);
-            var co2 = parseInt(document.getElementById("eco" + i).innerHTML);
-            var tvoc = parseInt(document.getElementById("tvoc" + i).innerHTML);
-            var temp = parseFloat(document.getElementById("temp" + i).innerHTML);
-            var rh = parseFloat(document.getElementById("rh" + i).innerHTML);
+            for (var i = 0; i < total; i++) {
+                var no2 = parseInt(document.getElementById("no" + i).innerHTML);
+                var co = parseInt(document.getElementById("co" + i).innerHTML);
+                var co2 = parseInt(document.getElementById("eco" + i).innerHTML);
+                var tvoc = parseInt(document.getElementById("tvoc" + i).innerHTML);
+                var temp = parseFloat(document.getElementById("temp" + i).innerHTML);
+                var rh = parseFloat(document.getElementById("rh" + i).innerHTML);
 
-            var date = document.getElementById("date" + i).innerHTML;
-            var time = document.getElementById("time" + i).innerHTML;
+                var date = document.getElementById("date" + i).innerHTML;
+                var time = document.getElementById("time" + i).innerHTML;
 
-            var parsedDate = date.split("-")
-            var parsedTime = time.split(":")
+                var parsedDate = date.split("-")
+                var parsedTime = time.split(":")
 
-            var datetime = new Date(parseInt(parsedDate[0]), parseInt(parsedDate[1]) - 1, parseInt(parsedDate[2]), parseInt(parsedTime[0]), parseInt(parsedTime[1]), parseInt(parsedTime[2]), 00)
+                var datetime = new Date(parseInt(parsedDate[0]), parseInt(parsedDate[1]) - 1, parseInt(parsedDate[2]), parseInt(parsedTime[0]), parseInt(parsedTime[1]), parseInt(parsedTime[2]), 00)
 
-            data.addRow([datetime, no2, co, co2, tvoc, temp, rh]);
-        };
+                data.addRow([datetime, no2, co, co2, tvoc, temp, rh]);
+            };
 
-        var options = {
-            chartArea: {
-                left: 40,
+            var options = {
+                chartArea: {
+                    left: 40,
+                    width: '100%',
+                    height: '100%'
+                },
                 width: '100%',
-                height: '100%'
-            },
-            width: '100%',
-            legend: {
-                position: 'top',
-                textStyle: {
-                    fontSize: 12
-                }
-            },
-            //curveType: 'function'
-        };
+                legend: {
+                    position: 'top',
+                    textStyle: {
+                        fontSize: 12
+                    }
+                },
+                //curveType: 'function'
+            };
 
-        var chart = new google.charts.Line(document.getElementById('chart'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
+            var chart = new google.charts.Line(document.getElementById('chart'));
+            chart.draw(data, google.charts.Line.convertOptions(options));
 
-        //var chart = new google.visualization.LineChart(document.getElementById('chart'));
+            //var chart = new google.visualization.LineChart(document.getElementById('chart'));
 
-        //chart.draw(data, options);
-    }
-</script>
+            //chart.draw(data, options);
+        }
+    </script>
 
-<!-- CODE TILL HERE -->
-</div>
-</body>
+    <!-- CODE TILL HERE -->
+    </div>
+    </body>
 
-</html>
+    </html>

@@ -1,4 +1,4 @@
-# Core module for time series prediction
+# Neural Network Module
 
 __author__ = "Rafael Samorinha"
 __version__ = "1.0.0"

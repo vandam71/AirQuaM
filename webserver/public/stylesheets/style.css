@@ -1,143 +1,169 @@
-html{
-  overflow-y: auto;
+html {
+    overflow-y: auto;
 }
 
-html, body {
-  height: 100%;
-  background-color: lightgray;
-  padding: 0px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html,
+body {
+    height: 100%;
+    background-color: lightgray;
+    padding: 0px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
 }
 
-ul{
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
+
 
 /*TOP NAVIGATION BAR SETTINGS*/
-.topnav{
-  background-color: #101820FF;
-  overflow: hidden;
+
+.topnav {
+    background-color: #101820FF;
+    overflow: hidden;
 }
 
-.topnav a{
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
 }
 
-.topnav a:hover{
-  background-color: #ddd;
-  color: black;
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
 }
 
-.topnav a.active{
-  background-color: #F2AA4CFF;
-  color: black;
+.topnav a.active {
+    background-color: #F2AA4CFF;
+    color: black;
 }
 
-.topnav .icon{
-  display: none;
+.topnav .icon {
+    display: none;
 }
 
-.topnav input[type=text]{
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
-  font-size: 17px;
+.topnav input[type=text] {
+    float: right;
+    padding: 6px;
+    border: none;
+    margin-top: 8px;
+    margin-right: 16px;
+    font-size: 17px;
 }
+
 
 /*TABLE SETTINGS*/
-table{
-  font-family: Arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 14px;
+
+table {
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
 }
 
-td, th{
-  border: 1px solid black;
-  text-align: left;
-  padding: 8px;
-  margin: auto;
+td,
+th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+    margin: auto;
 }
 
-tr:first-child{
-  background-color: #F2AA4CFF;
+tr:first-child {
+    background-color: #F2AA4CFF;
 }
 
-tr:nth-child(even){
-  background-color: rgba(16, 24, 32, 0.25);
+tr:nth-child(even) {
+    background-color: rgba(16, 24, 32, 0.25);
 }
+
 
 /*BUTTON SETTINGS*/
-#btn1{
-  background-color: #F2AA4CFF;
-  border: none;
-  color: black;
-  padding: 4px 16px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 14px;
-  float: right;
-  margin: auto;
+
+#btn1 {
+    background-color: #F2AA4CFF;
+    border: none;
+    color: black;
+    padding: 4px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    float: right;
+    margin: auto;
 }
 
-#btn2{
-  background-color: #F2AA4CFF;
-  border: none;
-  color: black;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  float: right;
-  margin: 10px auto auto auto;
+#btn2 {
+    background-color: #F2AA4CFF;
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    float: right;
+    margin: 10px auto auto auto;
 }
+
 
 /*GOOGLE MAPS MAP STYLE*/
-#map{
-  margin: 0;
-  padding: 0;
-  height: auto;
-  width: auto;
+
+#map {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    width: auto;
 }
+
 
 /*GRID VIEW*/
+
 .grid-container {
-  display: grid;
-  grid-template-columns: 350px 350px 350px auto 350px 500px;
-  grid-template-rows: auto auto auto auto auto;
-  grid-gap: 10px;
-  padding: 10px;
+    display: grid;
+    grid-template-columns: 350px 350px 350px auto 350px 500px;
+    grid-template-rows: auto auto auto auto auto;
+    grid-gap: 10px;
+    padding: 10px;
 }
 
-.grid-container > div {
-  text-align: center;
-  padding: 20px 0;
-  font-size: 30px;
-  /*border: 1px solid black;*/
+.grid-container>div {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+    /*border: 1px solid black;*/
 }
 
 .itemtable {
-  grid-area: 1 / 5 / span 2 / span 2;
+    grid-area: 1 / 5 / span 2 / span 2;
 }
-.itemchart{
-	grid-area:1 / 1 / span 5 / span 3;
+
+.itemchart {
+    grid-area: 1 / 1 / span 5 / span 3;
 }
 
 .itemmap {
-  border: 1px solid black;
-	grid-area: 4 / 5 /span 2 /span 2;
+    border: 1px solid black;
+    grid-area: 4 / 5 /span 2 /span 2;
+}
+
+.container {
+    height: auto;
+    vertical-align: top;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+.image {
+    width: fit-content;
+    object-fit: fill;
+    height: fit-content;
 }

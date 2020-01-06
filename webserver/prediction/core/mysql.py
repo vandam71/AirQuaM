@@ -4,18 +4,19 @@ from mysql.connector import errorcode
 
 
 class MySQLdb:
-    def __init__(self, user, password, database):
+    def __init__(self, user, password, database, host):
         self.db = None
         self.user = user
         self.password = password
         self.database = database
+        self.host = host
 
     def start_connection(self):
         """Start mysql connection
         :return: itself
         """
         try:
-            self.db = connector.connect(user=self.user, password=self.password, database=self.database)
+            self.db = connector.connect(host=self.host, user=self.user, password=self.password, database=self.database)
         except connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")

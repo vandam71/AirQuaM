@@ -14,7 +14,7 @@ class Http:
         self.params = params if params is not None else self.params
         try:
             self.response = requests.get(url=self.url, params=self.params)
-            self.response.raise_for_status()            # If the response was successful, no Exception will be raised
+            self.response.raise_for_status()  # If the response was successful, no Exception will be raised
         except HTTPError as err:
             print(f'[HTTP] Error occurred: {err}')
         except Exception as err:
@@ -28,7 +28,7 @@ class Http:
     def post(self, url=None, data=None):
         self.url = url if url is not None else self.url
         try:
-            self.response = requests.post(url=self.url, data=data)
+            self.response = requests.post(url=self.url, json=data)
             self.response.raise_for_status()  # If the response was successful, no Exception will be raised
         except HTTPError as err:
             print(f'[HTTP] Error occurred: {err}')

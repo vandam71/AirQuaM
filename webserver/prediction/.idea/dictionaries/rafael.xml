@@ -2,6 +2,10 @@
   <dictionary name="rafael">
     <words>
       <w>dataframe</w>
+      <w>dataset</w>
+      <w>keras</w>
+      <w>scaler</w>
+      <w>sklearn</w>
       <w>tensorflow</w>
       <w>tvoc</w>
     </words>

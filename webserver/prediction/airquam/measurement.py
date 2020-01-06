@@ -1,18 +1,15 @@
 import pandas as pd
-import numpy as np
-import mysql.connector
-from mysql.connector import errorcode
 
 
-class Data:
+class Measurement:
     def __init__(self, dataframe):
         self.df = dataframe
-        self.no2 = []
-        self.co = []
-        self.co2 = []
-        self.tvoc = []
-        self.temp = []
-        self.rh = []
+        self.no2 = None
+        self.co = None
+        self.co2 = None
+        self.tvoc = None
+        self.temp = None
+        self.rh = None
 
     def initialize(self, drop=True, sort=True):
         """Initialize the data
@@ -20,19 +17,13 @@ class Data:
         :param sort: sort the data set by datetime
         :return: itself
         """
-        if drop:
-            self.df.drop(['measurementID', 'stationID', 'GPSlatitude', 'GPSlongitude', 'ZoneID'], inplace=True, axis=1)
-
+        self.df.drop(['measurementID', 'stationID', 'GPSlatitude', 'GPSlongitude', 'ZoneID'], inplace=True,
+                     axis=1) if drop else self.df
         self.df['date'] = pd.to_datetime(self.df['date'])
         self.df['datetime'] = pd.to_datetime(self.df['time'] + self.df['date'])
-
-        if drop:
-            self.df.drop(['date', 'time'], inplace=True, axis=1)
-
+        self.df.drop(['date', 'time'], inplace=True, axis=1) if drop else self.df
         self.df.set_index('datetime', inplace=True)
-
-        if sort:
-            self.df.sort_values(by='datetime', inplace=True, ascending=True)
+        self.df.sort_values(by='datetime', inplace=True, ascending=True) if sort else self.df
         return self
 
     def split(self):
@@ -45,5 +36,4 @@ class Data:
         self.tvoc = self.df['TVOC'].values.reshape(-1, 1)
         self.temp = self.df['Temperature'].values.reshape(-1, 1)
         self.rh = self.df['Humidity'].values.reshape(-1, 1)
-
         return self

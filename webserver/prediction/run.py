@@ -1,38 +1,70 @@
 __author__ = "Rafael Samorinha"
 __version__ = "1.0.0"
 
-import json
 import signal
 import time
+import matplotlib.pyplot as plt
+import datetime
 import pandas as pd
+import numpy as np
 from datetime import timedelta
 
-from core.mysql import MySQLdb
-from core.data import Data
-from core.task import Job, ProgramKilled, signal_handler
 from core.timer import Timer
+from core.mysql import MySQLdb
+from core.task import Job, ProgramKilled, signal_handler
 from core.http import Http
+from airquam.measurement import Measurement
+from airquam.zone import Zone
 
-pd.set_option('display.expand_frame_repr', False)   # Show the full DataFrame
+pd.set_option('display.expand_frame_repr', False)  # Show the full DataFrame
 
-ZONE = 1
+
+def populate():
+    sine = (np.sin(2 * np.pi * 5 * np.arange(100) / 100) + 1) * 10
+
+    http = Http()
+    for i in range(100):
+        datetimeObj = datetime.datetime.now()
+        udate = datetimeObj.strftime("%Y-%m-%d")
+        utime = datetimeObj.strftime("%H:%M:%S")
+        try:
+            data = {"stationID": 1,
+                    "time": str(utime),
+                    "date": str(udate),
+                    "GPSlatitude": 41.50,
+                    "GPSlongitude": -8.30,
+                    "NO2": sine[i],
+                    "CO": sine[i],
+                    "CO2": sine[i],
+                    "TVOC": sine[i],
+                    "Temperature": sine[i],
+                    "Humidity": sine[i]
+                    }
+            http.post('http://airquam.herokuapp.com/data/measurement', data=data)
+        except:
+            pass
+        time.sleep(0.1)
 
 
 def program():
-    timer = Timer('HTTP').start()
-    http = Http()
-    http.delete(url='http://localhost:3000/data/station', data={
-        "stationID": 2,
-    })
+    timer = Timer('Program').start()
+    con = MySQLdb(host='eu-cdbr-west-02.cleardb.net', user='bc2f6bc64cfba9', password='0e84f59c',
+                  database='heroku_61f6ec79e99ef9a').start_connection()
+    result = con.read_db('SELECT * FROM Zone')
+    zones = []
+    for i in range(result.shape[0]):
+        zones.append(result['ZoneID'][i])
+    for i in range(len(zones)):
+        id = zones[i]
+        df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={id}')
+        data = Measurement(df).initialize().split()
+        zones[i] = Zone(id, data)
+    zones[0].predict()
+    print(zones[0].prediction.to_df())
+    plt.plot(zones[0].prediction.no2)
     timer.stop()
-
-    """
-    con = MySQLdb('root', '1234', 'airquam').start_connection()
-    df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={ZONE}')
-    data = Data(df).initialize().split()
-    print(data.df.values)
+    plt.show()
     con.close_connection()
-    """
 
 
 def main():
