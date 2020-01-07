@@ -6,6 +6,9 @@
 
 const uint8_t stationID = 1;
 
+static uint8_t wifi_availability = 0;
+
+
 static char* ssid = "thisisnotanetwork";//20
 static char* pass = "verysafepassword";//20
 
@@ -25,6 +28,7 @@ static volatile uint8_t wifi_user_buffer_index=0;
 
 static SemaphoreHandle_t xWifiOkSemaphore;
 static SemaphoreHandle_t xWifiSettingsMutex;
+
 
 static const char* post_str = 
 "POST /data/measurement HTTP/1.1\r\n\
@@ -56,17 +60,14 @@ Host: %s\r\n\
 Content-Type: application/json\r\n\
 \r\n";		
 
-static const char* station_get_str = 
-"sampleRate\":%d,\"date\":\"%d-%d-%dT%d:%d:%d%*s";
-//{"stationID":1,"name":"Default Station","sampleRate":1,"date":"2020-01-07T02:01:30.728Z"}
-
 
 static inline void esp8266_enable(void);
 static inline void esp8266_disable(void);
 static inline void esp8266_reset(void);
 static inline void esp8266_send_command(const char* cmd);
-static void esp8266_send_command_ack(const char* cmd, uint32_t timeout);
-static void esp8266_start_tcp(void);
+static uint8_t esp8266_send_command_ack(const char* cmd, uint32_t timeout);
+static uint8_t esp8266_start_tcp(void);
+static void esp8266_send_tcp(char* packet);
 static void esp8266_close_tcp(void);
 
 
@@ -94,9 +95,9 @@ inline void esp8266_disable(void)
   */
 inline void esp8266_reset(void)         
 {
-	esp8266_enable();
-	osDelay(100);
 	esp8266_disable();
+	osDelay(200);
+	esp8266_enable();
 }
 
 /**
@@ -114,11 +115,13 @@ inline void esp8266_send_command(const char* cmd)
   * @brief  send AT command to the ESP8266 and wait for "OK"
 	* @param	cmd			command string
 	* @param	timeout	timeout waiting for "OK"
-  * @retval None
+  * @retval WIFI_SUCESS or WIFI_FAIL
   */
-void esp8266_send_command_ack(const char* cmd, uint32_t timeout)         
+uint8_t esp8266_send_command_ack(const char* cmd, uint32_t timeout)         
 {
-  while(1)
+	uint8_t cnt = 0;
+	
+  while(cnt++ < WIFI_MAX_ERRORS)
   {
 		HAL_UART_Transmit(&ESP8266_UART_HANDLER, (uint8_t*)cmd, strlen(cmd), 100);
 		xQueueReset(xWifiOkSemaphore);
@@ -126,15 +129,17 @@ void esp8266_send_command_ack(const char* cmd, uint32_t timeout)
 		osDelay(200);//delay to prevent another command too fast
 		
 		if( xSemaphoreTake(xWifiOkSemaphore, pdMS_TO_TICKS(timeout)) == pdTRUE  )	//wait ok
-			break;
+			return WIFI_SUCESS;																											//ok found
   }
+	
+	return WIFI_FAIL;
 }
 
 /**
   * @brief  start TCP connection to the remote server
-  * @retval None
+  * @retval WIFI_SUCESS or WIFI_FAIL
   */
-void esp8266_start_tcp(void)         
+uint8_t esp8266_start_tcp(void)         
 {
 	char ip[32];
 	char buf[64];
@@ -154,7 +159,7 @@ void esp8266_start_tcp(void)
 	
 	sprintf(buf, "AT+CIPSTART=\"TCP\",\"%s\",%d", ip, port);
 	
-	esp8266_send_command_ack(buf,4000); 
+	return esp8266_send_command_ack(buf,4000); 
 }
 
 /**
@@ -185,26 +190,34 @@ inline void esp8266_close_tcp(void)
 }
 
 /**
-  * @brief  connect to a access point
-  * @retval None
+  * @brief  check if a wifi connection is available;
+	* @retval availability state (1: yes, 0: no)
   */
-void wifi_establish_connection(void)
+uint8_t wifi_available(void)
+{
+	return wifi_availability;
+}
+
+/**
+  * @brief  connect to a access point
+  * @retval WIFI_SUCESS or WIFI_FAIL
+  */
+uint8_t wifi_establish_connection(void)
 {
 	char buf[64];
-	
 	
 	xSemaphoreTake( xWifiSettingsMutex, pdMS_TO_TICKS(1000));	//wait for mutex
 	sprintf(buf, "AT+CWJAP=\"%s\",\"%s\"", ssid, pass);
 	xSemaphoreGive( xWifiSettingsMutex );
 
-	esp8266_send_command_ack(buf,20000); 
+	return esp8266_send_command_ack(buf,20000); 
 }
 
 /**
   * @brief  POST HTTP packet with a measurement object
-  * @retval None
+  * @retval WIFI_SUCESS or WIFI_FAIL
   */
-void wifi_post_measurement(void)
+uint8_t wifi_post_measurement(void)
 { //TODO: add measurement parameter
 	sprintf(post_buffer, measurement_post_str, 
 		stationID,2,3,4,2000+5,6,7,(float)8,(float)-9,10,11,12,13,14,15);
@@ -215,27 +228,33 @@ void wifi_post_measurement(void)
 	xSemaphoreGive( xWifiSettingsMutex );																//release mutex
 
 	
-	
-	esp8266_start_tcp();
+	if( esp8266_start_tcp() == WIFI_FAIL)
+		return WIFI_FAIL;
 	
 	esp8266_send_tcp(wifi_TXbuffer);
 	
 	osDelay(3000);
 	esp8266_close_tcp();
+	
+	return WIFI_SUCESS;
 }
 
 /**
   * @brief  GET HTTP packet with station object
-  * @retval None
+  * @retval WIFI_SUCESS or WIFI_FAIL
   */
-void wifi_get_station(void)
+uint8_t wifi_get_station(void)
 {
+	uint8_t cnt = 0;
 	char* ptr = NULL;
-	uint32_t sampleRate;
+	uint32_t sampleRate, state;
 	uint32_t year, month, day;
 	uint32_t hour, minute, second;
 	
 	do{
+		if(cnt++ >= WIFI_MAX_ERRORS)
+			return WIFI_FAIL;
+		
 		memset(get_buffer, 0, 512);//clear buffer
 		
 		xSemaphoreTake( xWifiSettingsMutex, pdMS_TO_TICKS(1000));			//wait for mutex
@@ -244,7 +263,8 @@ void wifi_get_station(void)
 		xSemaphoreGive( xWifiSettingsMutex );													//release mutex
 
 		
-		esp8266_start_tcp();						 //start tcp connection
+		if( esp8266_start_tcp() == WIFI_FAIL )						 //start tcp connection
+			continue;
 		esp8266_send_tcp(wifi_TXbuffer); //send request
 
 		HAL_UART_AbortReceive_IT(&ESP8266_UART_HANDLER);	//stop wifi uart interrupts
@@ -259,13 +279,24 @@ void wifi_get_station(void)
 		ptr=strstr( get_buffer, "{\"station");	//look for a expected string
 	}while( !ptr ); //if not found, repeat
 	
-	ptr=strstr( get_buffer, "sampleRate");
-	sscanf(ptr, station_get_str,
-		&sampleRate, &year, &month, &day, &hour, &minute, &second); //recover results
+  //recover results
+  if ( ( ptr = strstr(get_buffer, "sampleRate") ) )
+    sscanf(ptr, "sampleRate\":%d", &sampleRate);
+	
+  if ( ( ptr = strstr (get_buffer, "date") ) )
+    sscanf(ptr, "date\":\"%d-%d-%dT%d:%d:%d%*s", &year, &month, &day, &hour, &minute, &second);
+	
+  if ( ( ptr = strstr (get_buffer, "state") ) )
+    sscanf(ptr, "state\":%d", &state);
+	
+	
+	//{"stationID":1,"name":"Default Station","sampleRate":1,"date":"2020-01-07T02:01:30.728Z"}
 	
 	printf("\r\nGET STATION: samplerate: %d  ---- %4d-%02d-%02d, %d:%d:%d ",
 			sampleRate, year, month, day, hour, minute, second);
-HAL_Delay(1000);
+	HAL_Delay(1000);
+	
+	return WIFI_SUCESS;
 }
 
 /**
@@ -292,7 +323,7 @@ void wifi_user_CommandHandler(void)
 	{
 		
 		xSemaphoreTakeFromISR( xWifiSettingsMutex, NULL);									//wait for mutex
-		sscanf(wifi_user_buffer, "AT+CWJAP=\"%s\",\"%s\"", ssid, pass);		//update settings
+		sscanf(wifi_user_buffer, "AT+CWJAP=\"%[^\"]\",\"%[^\"]", ssid, pass);		//update settings
 		xSemaphoreGiveFromISR( xWifiSettingsMutex, NULL);									//release mutex
 		
 	}
@@ -300,7 +331,7 @@ void wifi_user_CommandHandler(void)
 	{
 		
 		xSemaphoreTakeFromISR( xWifiSettingsMutex, NULL);					//wait for mutex
-		sscanf(wifi_user_buffer, "AT+CIP=\"%s\"", server_ip);			//update settings
+		sscanf(wifi_user_buffer, "AT+CIP=\"%[^\"]", server_ip);			//update settings
 		xSemaphoreGiveFromISR( xWifiSettingsMutex, NULL);					//release mutex
 
 	}
@@ -372,6 +403,7 @@ void wifi_init(void)                                //This function contains AT 
 	
 	esp8266_disable();
 	
+	wifi_availability = 0;
 	HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
 	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);
 	
@@ -383,36 +415,58 @@ void wifi_init(void)                                //This function contains AT 
   */
 void vWifi_taskFunction(void const * argument)
 {
-	
-	osDelay(200);
-	esp8266_enable();
-	osDelay(5000);
-	
-	esp8266_send_command_ack("AT",200);                   //Sends AT command with time(Command for Achknowledgement)
-	esp8266_send_command_ack("AT+CWMODE=1",200);          //Sends AT command with time (For setting mode of Wifi)
-	esp8266_send_command_ack("AT+CWQAP",200);            //Sends AT command with time (for Quit AP)
-	esp8266_send_command_ack("AT+RST", 5000);             //Sends AT command with time (For RESETTING WIFI)
-	osDelay(5000);
-	
-	wifi_establish_connection();
-	
-	osDelay(5000);
-	
-	wifi_get_station();
-	
-	osDelay(1000);
-	
-	//while()measurement available
-		wifi_post_measurement();
-	printf("end\r\n");
-	
-	
-	
-	while(1)
+	while(1)	//setup, only exit if concluded correctly
 	{
-
+		esp8266_reset();
+		osDelay(5000);
 		
+		if( esp8266_send_command_ack("AT",200) == WIFI_FAIL )                   //Sends AT command with time(Command for Achknowledgement)
+			continue;
+		if( esp8266_send_command_ack("AT+CWMODE=1",200) == WIFI_FAIL )          //Sends AT command with time (For setting mode of Wifi)
+			continue;
+		if( esp8266_send_command_ack("AT+RST", 5000) == WIFI_FAIL )             //Sends AT command with time (For RESETTING WIFI)
+			continue;
+		break;
 	}
+	
+	for(;;)		//infinite loop
+	{	
+		esp8266_enable();
+		osDelay(5000);
+		
+		do{
+			if( wifi_establish_connection() == WIFI_FAIL )  //connect to a access point
+			{	
+				wifi_availability = 0;
+				break;
+			}
+			
+			wifi_availability = 1;
+			osDelay(500);
+			
+			if( wifi_get_station() == WIFI_FAIL )  					//get latest settings from server
+			{	
+				wifi_availability = 0;
+				break;
+			}
+			
+			osDelay(1000);
+			
+			//while()measurement available
+			{
+				if( wifi_post_measurement() == WIFI_FAIL )  	//post a measurement
+				{	
+					wifi_availability = 0;
+					break;
+				}
+			}
+			
+		}while(0);
+		
+		esp8266_disable();
+		osDelay(1000*60*2);		//sleep 2 minutes
+	}
+	
 }
 
 
