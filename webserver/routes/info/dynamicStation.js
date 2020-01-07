@@ -18,7 +18,7 @@ router.get('/station/:id', function(req, res) {
                             'stationID': result[0].stationID,
                             'name': result[0].name,
                             'sampleRate': result[0].sampleRate,
-                            'activeSensors': result[0].activeSensors
+                            'state': result[0].state
                         }
                         res.render('stationinfo', { station })
                     }
@@ -30,7 +30,7 @@ router.get('/station/:id', function(req, res) {
 })
 
 router.post('/station/:id', function(req, res) {
-    connection.query("UPDATE Station SET name='" + req.body.stationName + "', sampleRate='" + parseInt(req.body.sampleRate) + "', activeSensors='" + parseInt(req.body.activeSensors) + "' WHERE stationID=" + parseInt(req.params.id), function(err, result, fields) {
+    connection.query("UPDATE Station SET name='" + req.body.stationName + "', sampleRate='" + parseInt(req.body.sampleRate) + "', state='" + parseInt(req.body.state) + "' WHERE stationID=" + parseInt(req.params.id), function(err, result, fields) {
         if (err) {
             console.log(err);
         }

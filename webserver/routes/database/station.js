@@ -24,7 +24,8 @@ router.get('/station/:id', function(req, res) {
             'stationID': result[0].stationID,
             'name': result[0].name,
             'sampleRate': result[0].sampleRate,
-            'date': new Date()
+            'date': new Date(),
+            'state': result[0].state
         }
         res.send(json)
     });
@@ -32,7 +33,7 @@ router.get('/station/:id', function(req, res) {
 
 //POST method for /station
 router.post('/station', function(req, res) {
-    connection.query("INSERT INTO Station (name, sampleRate, activeSensors) VALUES ('" + req.body.name + "', '" + req.body.sampleRate + "', '" + req.body.activeSensors + "')", function(err, result) {
+    connection.query("INSERT INTO Station (name, sampleRate, state) VALUES ('" + req.body.name + "', '" + req.body.sampleRate + "', '" + req.body.state + "')", function(err, result) {
         if (err) {
             console.error(err);
             res.send(400);
@@ -51,7 +52,7 @@ router.put('/station', function(req, res) {
         if (result.length == 0) {
             res.send(406);
         } else {
-            connection.query("UPDATE Station SET name='" + req.body.name + "', sampleRate='" + req.body.sampleRate + "', activeSensors='" + req.body.activeSensors + "' WHERE stationID=" + req.body.stationID, function(err, result, fields) {
+            connection.query("UPDATE Station SET name='" + req.body.name + "', sampleRate='" + req.body.sampleRate + "', state='" + req.body.state + "' WHERE stationID=" + req.body.stationID, function(err, result, fields) {
                 if (err) {
                     console.log(err);
                     res.send(400);
@@ -75,7 +76,7 @@ router.delete('/station', function(req, res) {
                 if (err) {
                     console.error(err);
                 } else if (result.length == 0) {
-                    connection.query("DELETE FROM Station WHERE stationID=" + parseInt(req.body.stationID), function(err, result) {
+                    connection.query("DELETE FROM Station WHERE stationID=" + req.body.stationID, function(err, result) {
                         if (err) {
                             if (err.errno == 1451) {
                                 console.error(err.message)

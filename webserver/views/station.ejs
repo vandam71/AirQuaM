@@ -1,40 +1,48 @@
 <% include partials/header.ejs %>
-<!-- CODE FROM HERE -->
-<script>
-    function addStation() {
-        location.replace("/info/station/add");
-    }
-</script>
-<script>
-    function redirect(e) {
-        var row = e.closest('tr').rowIndex;
-        var table = document.getElementById("StationTable");
-        var data = table.rows[row].cells[0].firstChild.nodeValue;
-        var url = "/info/station/" + parseInt(data);
-        location.replace(url);
-    }
-</script>
-<button id="btn2" onclick="addStation()">Add Station</button>
-<h1>Station List</h1>
-<table id="StationTable">
-    <tr>
-        <th style="font-size: 150%;"><strong>ID</strong></th>
-        <th style="font-size: 150%;"><strong>Name</strong></th>
-        <th style="font-size: 150%;"><strong>Sample Rate</strong></th>
-        <th style="font-size: 150%;"><strong>Active Sensors</strong></th>
-    </tr>
-    <% for(var i=0; i<stationList.length; i++) {%>
-    <tr>
-        <td><%= stationList[i].stationID%></td>
-        <td><%= stationList[i].name%></td>
-        <td><%= stationList[i].sampleRate%></td>
-        <td><%= stationList[i].activeSensors%></td>
-        <td width="1%"><button id="btn1" onclick="redirect(this)">EDIT</button></td>
-    </tr>
-    <% } %>
-</table>
-<!-- CODE TILL HERE -->
-</div>
-</body>
+    <!-- CODE FROM HERE -->
+    <script>
+        function addStation() {
+            location.replace("/info/station/add");
+        }
+    </script>
+    <script>
+        function redirect(e) {
+            var row = e.closest('tr').rowIndex;
+            var table = document.getElementById("StationTable");
+            var data = table.rows[row].cells[0].firstChild.nodeValue;
+            var url = "/info/station/" + parseInt(data);
+            location.replace(url);
+        }
+    </script>
+    <button id="btn2" onclick="addStation()">Add Station</button>
+    <h1>Station List</h1>
+    <table id="StationTable">
+        <tr>
+            <th style="font-size: 150%;"><strong>ID</strong></th>
+            <th style="font-size: 150%;"><strong>Name</strong></th>
+            <th style="font-size: 150%;"><strong>Sample Rate</strong></th>
+            <th style="font-size: 150%;"><strong>State</strong></th>
+        </tr>
+        <% for(var i=0; i<stationList.length; i++) {%>
+            <tr>
+                <td>
+                    <%= stationList[i].stationID%>
+                </td>
+                <td>
+                    <%= stationList[i].name%>
+                </td>
+                <td>
+                    <%= stationList[i].sampleRate%>
+                </td>
+                <td>
+                    <%= stationList[i].state%>
+                </td>
+                <td width="1%"><button id="btn1" onclick="redirect(this)">EDIT</button></td>
+            </tr>
+            <% } %>
+    </table>
+    <!-- CODE TILL HERE -->
+    </div>
+    </body>
 
-</html>
+    </html>

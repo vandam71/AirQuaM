@@ -1,17 +1,17 @@
 <% include partials/header.ejs %>
-<!-- CODE FROM HERE -->
-<form action="/info/station/add/" method="post">
-    <p><label for="station_name">Enter name: </label>
-        <input id="station_name" type="text" name="stationName" value="Default Station"></p>
-    <p><label for="sampleRate">Sample Rate (s):</label>
-        <input id="sampleRate" type="number" name="sampleRate" value="1"></p>
-    <p><label for="activeSensors">Active Sensors (0-15)</label>
-        <input id="activeSensors" type="number" name="activeSensors" min="0" max="15" step="1" value="0"></p>
-    <input type="submit" value="Add Station">
-</form>
+    <!-- CODE FROM HERE -->
+    <form action="/info/station/add/" method="post">
+        <p><label for="station_name">Enter name: </label>
+            <input id="station_name" type="text" name="stationName" value="Default Station"></p>
+        <p><label for="sampleRate">Sample Rate (s):</label>
+            <input id="sampleRate" type="number" name="sampleRate" value="1"></p>
+        <p><label for="state">State (0-1)</label>
+            <input id="state" type="number" name="state" min="0" max="1" step="1" value="0"></p>
+        <input type="submit" value="Add Station">
+    </form>
 
-<!-- CODE TILL HERE -->
-</div>
-</body>
+    <!-- CODE TILL HERE -->
+    </div>
+    </body>
 
-</html>
+    </html>

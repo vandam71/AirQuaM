@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../../lib/db');
 
-router.get('/station', function (req, res) {
+router.get('/station', function(req, res) {
     var stationList = [];
 
-    connection.query("SELECT * FROM Station", function (err, rows, fields) {
+    connection.query("SELECT * FROM Station", function(err, rows, fields) {
         if (err) {
             console.log(err.message);
         } else {
@@ -14,7 +14,7 @@ router.get('/station', function (req, res) {
                     'stationID': rows[i].stationID,
                     'name': rows[i].name,
                     'sampleRate': rows[i].sampleRate,
-                    'activeSensors': rows[i].activeSensors
+                    'state': rows[i].state
                 }
                 stationList.push(station);
             }
@@ -23,10 +23,10 @@ router.get('/station', function (req, res) {
     });
 });
 
-router.get('/measurement', function (req, res) {
+router.get('/measurement', function(req, res) {
     var measurementList = [];
 
-    connection.query("SELECT * FROM Measurement", function (err, rows, fields) {
+    connection.query("SELECT * FROM Measurement", function(err, rows, fields) {
         if (err) {
             console.log(err.message)
         } else {
@@ -44,23 +44,23 @@ router.get('/measurement', function (req, res) {
                     'CO2': rows[i].CO2,
                     'TVOC': rows[i].TVOC,
                     'Temperature': rows[i].Temperature,
-                    'Humidity': rows[i].Humidity    
+                    'Humidity': rows[i].Humidity
                 }
                 measurementList.push(measurement);
             }
-            res.render('measurement', {"measurementList": measurementList});
+            res.render('measurement', { "measurementList": measurementList });
         }
     })
 })
 
-router.get('/zone', function (req, res){
+router.get('/zone', function(req, res) {
     var zoneList = [];
 
-    connection.query("SELECT * FROM Zone", function (err, rows, fields){
-        if(err){
+    connection.query("SELECT * FROM Zone", function(err, rows, fields) {
+        if (err) {
             console.log(err.message)
-        } else{
-            for(var i = 0; i<rows.length; i++){
+        } else {
+            for (var i = 0; i < rows.length; i++) {
                 var zone = {
                     'ZoneID': rows[i].ZoneID,
                     'ZoneLatitude': rows[i].ZoneLatitude,
@@ -68,7 +68,7 @@ router.get('/zone', function (req, res){
                 }
                 zoneList.push(zone);
             }
-            res.render('zone', {'zoneList': zoneList});
+            res.render('zone', { 'zoneList': zoneList });
         }
     })
 })
