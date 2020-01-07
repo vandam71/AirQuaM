@@ -57,8 +57,8 @@ Content-Type: application/json\r\n\
 \r\n";		
 
 static const char* station_get_str = 
-"[{\"stationID\":%*d,\"name\":\"%*s\",\"sampleRate\":%d,\"date\":\"%d-%d-%dT%d:%d:%d%*s";
-
+"sampleRate\":%d,\"date\":\"%d-%d-%dT%d:%d:%d%*s";
+//{"stationID":1,"name":"Default Station","sampleRate":1,"date":"2020-01-07T02:01:30.728Z"}
 
 
 static inline void esp8266_enable(void);
@@ -123,8 +123,9 @@ void esp8266_send_command_ack(const char* cmd, uint32_t timeout)
 		HAL_UART_Transmit(&ESP8266_UART_HANDLER, (uint8_t*)cmd, strlen(cmd), 100);
 		xQueueReset(xWifiOkSemaphore);
 		HAL_UART_Transmit(&ESP8266_UART_HANDLER, (uint8_t*)"\r\n", 2, 100);
-			
-		if( xSemaphoreTake( xWifiOkSemaphore, pdMS_TO_TICKS(timeout) == pdTRUE ) )	//wait ok
+		osDelay(200);//delay to prevent another command too fast
+		
+		if( xSemaphoreTake(xWifiOkSemaphore, pdMS_TO_TICKS(timeout)) == pdTRUE  )	//wait ok
 			break;
   }
 }
@@ -246,23 +247,25 @@ void wifi_get_station(void)
 		esp8266_start_tcp();						 //start tcp connection
 		esp8266_send_tcp(wifi_TXbuffer); //send request
 
-		HAL_UART_AbortReceive_IT(&ESP8266_UART_HANDLER);
+		HAL_UART_AbortReceive_IT(&ESP8266_UART_HANDLER);	//stop wifi uart interrupts
 		__HAL_UART_FLUSH_DRREGISTER(&ESP8266_UART_HANDLER);
-		HAL_UART_Receive(&ESP8266_UART_HANDLER, (uint8_t*)get_buffer, 512, 5000);  //wait results, this will stop interrupts
+		HAL_UART_Receive(&ESP8266_UART_HANDLER, (uint8_t*)get_buffer, 512, 5000);  //receive data in poling mode
 		
-		HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);	//start interrupt mode again
-		printf("%s",wifi_RXbuffer);
+		HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);//enable wifi uart interrupts again
+		printf("%s",get_buffer);//show get data to serial
 		
 		esp8266_close_tcp();
 		
-		ptr=strstr( wifi_TXbuffer, "[{");
+		ptr=strstr( get_buffer, "{\"station");	//look for a expected string
 	}while( !ptr ); //if not found, repeat
 	
-	sscanf(ptr+2, station_get_str,
-		sampleRate, year, month, day, hour, minute, second); //recover results
+	ptr=strstr( get_buffer, "sampleRate");
+	sscanf(ptr, station_get_str,
+		&sampleRate, &year, &month, &day, &hour, &minute, &second); //recover results
 	
-	printf("\nGET STATION: samplerate: %d  ---- %4d-%02d-%02d, %d:%d:%d ",
+	printf("\r\nGET STATION: samplerate: %d  ---- %4d-%02d-%02d, %d:%d:%d ",
 			sampleRate, year, month, day, hour, minute, second);
+HAL_Delay(1000);
 }
 
 /**
@@ -283,7 +286,7 @@ void wifi_user_CommandHandler(void)
 		printf("\r\nAT+CIP=\"192.168.137.1:3000\"");
 		printf("\r\nAT+CIP=\"airquam.herokuapp.com\"");
 		
-		printf("\r\n----------------------\r\n");
+		printf("\r\n\r\n----------------------\r\n");
 	}
 	else if( !strncmp(wifi_user_buffer, "AT+CWJAP=\"", strlen("AT+CWJAP=\"")) )		//set ssid and pass
 	{
@@ -332,7 +335,8 @@ void wifi_user_CallBack(void)
   */
 void wifi_CallBack(void)
 {
-	uint8_t aux = wifi_RXbuffer[wifi_RXbuffer_index];
+	static uint8_t aux;
+	aux = wifi_RXbuffer[wifi_RXbuffer_index];
 	HAL_UART_Transmit_IT(&huart3, &aux, 1);						//echo to uart3
 	
 	if(wifi_RXbuffer[wifi_RXbuffer_index] == '\n')		//end of line
@@ -366,13 +370,10 @@ void wifi_init(void)                                //This function contains AT 
 	xWifiOkSemaphore = xSemaphoreCreateBinary();
 	xWifiSettingsMutex = xSemaphoreCreateMutex();
 	
-	HAL_GPIO_WritePin(WIFI_RST_GPIO_Port, WIFI_RST_Pin, GPIO_PIN_RESET);
+	esp8266_disable();
 	
 	HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
 	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);
-	
-	HAL_Delay(200);
-	HAL_GPIO_WritePin(WIFI_RST_GPIO_Port, WIFI_RST_Pin, GPIO_PIN_SET);
 	
 }
 
@@ -383,6 +384,10 @@ void wifi_init(void)                                //This function contains AT 
 void vWifi_taskFunction(void const * argument)
 {
 	
+	osDelay(200);
+	esp8266_enable();
+	osDelay(5000);
+	
 	esp8266_send_command_ack("AT",200);                   //Sends AT command with time(Command for Achknowledgement)
 	esp8266_send_command_ack("AT+CWMODE=1",200);          //Sends AT command with time (For setting mode of Wifi)
 	esp8266_send_command_ack("AT+CWQAP",200);            //Sends AT command with time (for Quit AP)
@@ -390,14 +395,15 @@ void vWifi_taskFunction(void const * argument)
 	osDelay(5000);
 	
 	wifi_establish_connection();
-	printf("connect_done\r\n");
+	
 	osDelay(5000);
 	
 	wifi_get_station();
 	
 	osDelay(1000);
 	
-	wifi_post_measurement();
+	//while()measurement available
+		wifi_post_measurement();
 	printf("end\r\n");
 	
 	
