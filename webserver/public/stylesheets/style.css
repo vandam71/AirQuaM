@@ -129,7 +129,7 @@ tr:nth-child(even) {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 350px 350px 350px auto 350px 500px;
+    grid-template-columns: 350px 350px 350px auto 350px 350px;
     grid-template-rows: auto auto auto auto auto;
     grid-gap: 10px;
     padding: 10px;
@@ -139,7 +139,7 @@ tr:nth-child(even) {
     text-align: center;
     padding: 20px 0;
     font-size: 30px;
-    /*border: 1px solid black;*/
+    border: 1px solid black;
 }
 
 .itemtable {

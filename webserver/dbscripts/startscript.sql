@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS Zone(
 
 CREATE TABLE IF NOT EXISTS Prediction(
     ZoneID INT(10) NOT NULL,
+    time TIME NOT NULL,
     date DATE NOT NULL,
     NO2 INT(10),
     CO INT(10),

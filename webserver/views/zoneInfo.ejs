@@ -122,12 +122,14 @@
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClIURvk2YvL89LjCcv2-HS9FQzvOLqBdM&callback=initMap">
     </script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-        //google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.load('current', {
-            'packages': ['line']
+        google.charts.load('43', {
+            packages: ['corechart']
         });
+        /*google.charts.load('43', {
+            packages: ['line']
+        });*/
+
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
@@ -165,6 +167,20 @@
             var options = {
                 chartArea: {
                     left: 40,
+                    width: '80%',
+                    height: '80%'
+                },
+                legend: {
+                    position: 'right'
+                }
+            }
+            var chart = new google.visualization.LineChart(document.getElementById('chart'));
+            chart.draw(data, options);
+
+
+            /*var options = {
+                chartArea: {
+                    left: 40,
                     width: '100%',
                     height: '100%'
                 },
@@ -175,15 +191,9 @@
                         fontSize: 12
                     }
                 },
-                //curveType: 'function'
             };
-
             var chart = new google.charts.Line(document.getElementById('chart'));
-            chart.draw(data, google.charts.Line.convertOptions(options));
-
-            //var chart = new google.visualization.LineChart(document.getElementById('chart'));
-
-            //chart.draw(data, options);
+            chart.draw(data, google.charts.Line.convertOptions(options));*/
         }
     </script>
 

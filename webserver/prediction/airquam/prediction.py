@@ -23,3 +23,7 @@ class Prediction:
                  'CO2': self.co[i],
                  'TVOC': self.tvoc[i], 'Temperature': self.temp[i], 'Humidity': self.rh[i]}, ignore_index=True)
         return df
+
+    def add_to_db(self, db):
+        db.write_sql(f'INSERT INTO Prediction (ZoneID, time, date, NO2, CO, CO2, TVOC')
+

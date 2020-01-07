@@ -20,7 +20,7 @@ pd.set_option('display.expand_frame_repr', False)  # Show the full DataFrame
 
 
 def populate():
-    sine = (np.sin(2 * np.pi * 5 * np.arange(100) / 100) + 1) * 10
+    sine = (np.sin(2 * np.pi * 5 * np.arange(100) / 100) + 1)
 
     http = Http()
     for i in range(100):
@@ -31,14 +31,14 @@ def populate():
             data = {"stationID": 1,
                     "time": str(utime),
                     "date": str(udate),
-                    "GPSlatitude": 41.50,
+                    "GPSlatitude": 41.53,
                     "GPSlongitude": -8.30,
-                    "NO2": sine[i],
-                    "CO": sine[i],
-                    "CO2": sine[i],
-                    "TVOC": sine[i],
-                    "Temperature": sine[i],
-                    "Humidity": sine[i]
+                    "NO2": sine[i] * 10,
+                    "CO": sine[i] * 100,
+                    "CO2": sine[i] * 1000,
+                    "TVOC": sine[i] * 10000,
+                    "Temperature": sine[i] * 10,
+                    "Humidity": sine[i] * 10
                     }
             http.post('http://airquam.herokuapp.com/data/measurement', data=data)
         except:
@@ -59,9 +59,16 @@ def program():
         df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={id}')
         data = Measurement(df).initialize().split()
         zones[i] = Zone(id, data)
-    zones[0].predict()
-    print(zones[0].prediction.to_df())
-    plt.plot(zones[0].prediction.no2)
+    zones[3].predict(retrain=False)
+
+    fig, ax2 = plt.subplots(figsize=(8, 4))
+    plt.plot(zones[3].data.temp, color='blue', label="True")
+    ax2.plot(range(len(zones[3].data.temp), len(zones[3].data.temp) + len(zones[3].prediction.temp)),
+             zones[3].prediction.temp, color='red',
+             label="Predicted")
+    plt.legend()
+    plt.show()
+
     timer.stop()
     plt.show()
     con.close_connection()

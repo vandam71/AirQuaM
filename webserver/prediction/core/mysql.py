@@ -33,6 +33,11 @@ class MySQLdb:
         """
         return pd.read_sql(query, self.db)
 
+    def write_sql(self, query):
+        cursor = self.db.cursor()
+        cursor.execute(query)
+        self.db.commit()
+
     def close_connection(self):
         """Close connection to the database"""
         self.db.close()
