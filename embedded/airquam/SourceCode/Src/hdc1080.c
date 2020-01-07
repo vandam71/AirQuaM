@@ -79,6 +79,8 @@ float hdc1080_measureRH(void)
 
 /**
   * @brief  read sensor i2c temperature and humidity registers
+	* @param 	temperature	pointer to temperature variable
+	* @param 	humidity 		pointer to humidity variable
   * @retval None
   */
 void hdc1080_measure_T_RH(float *temperature, float *humidity)

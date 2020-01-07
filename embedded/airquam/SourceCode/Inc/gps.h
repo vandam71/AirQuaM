@@ -9,8 +9,8 @@
 
 enum gps_return 
 {
-	GPS_SUCESS=0, 
-	GPS_FAIL
+	GPS_FAIL = 0,
+	GPS_SUCESS
 };
 
 typedef struct

@@ -75,13 +75,11 @@ void	gps_init(void)
 {
 	buff_index=0;
 	buff_receiving=0;
-	gps_availability=0;
-	HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
-
+	gps_availability=0;	
 }
 
 /**
-  * @brief  uart callback routine
+  * @brief  gps uart callback routine
   * @retval None
   */
 void	gps_CallBack(void)
@@ -93,14 +91,14 @@ void	gps_CallBack(void)
 			buff_index = 0;
 			
 			// notification give (binnary semaphore like)
-			//vTaskNotifyGiveFromISR( taskGpsHandle, NULL );
+			vTaskNotifyGiveFromISR( taskGpsHandle, NULL );
 		
 		}
 		else if(buff_arr[buff_receiving][buff_index] == '\r');
 		else																								//new char
 		{
 			buff_index++;
-			buff_index &= ~(1<<7); //keep inside the limits
+			buff_index &= ~(1<<8); //keep inside the limits
 		}
 		//set the interrups for UART3 Rx again
 		HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
@@ -133,11 +131,16 @@ void vGps_taskFunction(void const * argument)
 	gps_t my_gps;
 	static uint32_t last_gps_tick=0; //in ms
 			printf("hellogps \n");
+	
+	HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
+	__HAL_UART_FLUSH_DRREGISTER(&GPS_UART_HANDLER);
+	HAL_UART_Receive_IT(&GPS_UART_HANDLER, &buff_arr[buff_receiving][buff_index], 1);
+	
   /* Infinite loop */
 	for(;;)
   {
 		// notification take (binnary semaphore like)
-		ulTaskNotifyTake( pdTRUE, pdMS_TO_TICKS(1000) );  
+		while( ulTaskNotifyTake( pdTRUE, portMAX_DELAY ) == pdFAIL);  
 
 		if ( gps_process(&my_gps, &buff_arr[!buff_receiving][0]) == GPS_SUCESS) //process data
 		{
@@ -148,7 +151,11 @@ void vGps_taskFunction(void const * argument)
 		else																//if the timeout exeeds, set availability accordingly
 			if( gps_availability )				
 				if( (HAL_GetTick()-last_gps_tick) > (GPS_AVAILABLE_TIMEOUT*HAL_GetTickFreq()*1000) )
+				{
 					gps_availability = 0;
+					gps.latitude = -1000;
+					gps.longitude = -1000;
+				}
 
   }
 	

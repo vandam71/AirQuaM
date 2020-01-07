@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F767xx,USE_HAL_DRIVER,STM32F767xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;    ../Drivers/STM32F7xx_HAL_Driver/Inc;    ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;    ../Middlewares/Third_Party/FreeRTOS/Source/include;    ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;    ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM7/r0p1;    ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;    ../Drivers/CMSIS/Include;    ..\SourceCode\Inc</IncludePath>
+              <IncludePath>../Core/Inc;           ../Drivers/STM32F7xx_HAL_Driver/Inc;           ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;           ../Middlewares/Third_Party/FreeRTOS/Source/include;           ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;           ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM7/r0p1;           ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;           ../Drivers/CMSIS/Include;           ..\SourceCode\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -686,6 +686,11 @@
               <FileName>airquam.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\Src\airquam.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\Src\wifi.c</FilePath>
             </File>
           </Files>
         </Group>

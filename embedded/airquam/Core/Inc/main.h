@@ -65,6 +65,8 @@ void Error_Handler(void);
 #define MICS_NOX_GPIO_Port GPIOC
 #define MICS_RED_Pin GPIO_PIN_1
 #define MICS_RED_GPIO_Port GPIOC
+#define WIFI_RST_Pin GPIO_PIN_3
+#define WIFI_RST_GPIO_Port GPIOD
 #define MICS_PRE_Pin GPIO_PIN_7
 #define MICS_PRE_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

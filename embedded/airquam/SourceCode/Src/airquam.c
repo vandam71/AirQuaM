@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "string.h" 
 #include "math.h" 
+#include "wifi.h" 
 #include "ssd1306.h"
 
 static airquam_t airquam;
@@ -10,7 +11,7 @@ static airquam_t airquam;
 static measurement_t		*bkp_buffer;					
 static uint32_t 				*bkp_buffer_items;		
 
-extern TaskHandle_t taskMeasurementHandle;	//handler for the measurement task
+extern TaskHandle_t taskAirquamHandle;	//handler for the airquam task
 
 
 /**
@@ -20,7 +21,7 @@ extern TaskHandle_t taskMeasurementHandle;	//handler for the measurement task
 static inline void bkp_buffer_erase(void)
 {
 	*bkp_buffer_items = 0;
-	memset(bkp_buffer, 0, MAX_BUFFER_SIZE*sizeof(measurement_t)); 
+	memset(bkp_buffer, 0, MAX_BUFFER_SIZE*sizeof(measurement_t)); 	
 }
 	
 /**
@@ -106,7 +107,7 @@ void draw_display(airquam_t aqm)
 	}
 	else
 	{
-		sprintf(str,"  %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, aqm.current_meas.date.Year);
+		sprintf(str,"  %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, 2000+aqm.current_meas.date.Year);
 		ssd1306_SetCursor(4, 2);	ssd1306_WriteString(str, Font_7x10, White);		//date
 
 		sprintf(str,"T:%.1f'C   RH:%3.0f%%", aqm.current_meas.environment.T, aqm.current_meas.environment.RH);
@@ -164,13 +165,16 @@ void airquam_init(void)
 	airquam.sampling_state = 0;
 	airquam.gps_state = 0;
 	airquam.wifi_state = 0;
-		
+	
+	gps_init();
+	wifi_init();
 	ssd1306_Init();
 	draw_splash();
 	
-	gps_init();
+	
 	measurement_init();
 	bkp_buffer_init();
+	
 	
 }
 
@@ -180,9 +184,9 @@ void airquam_init(void)
   */
 void airquam_CallBack(void)
 {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	//BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	// notification give (binnary semaphore like)
-	vTaskNotifyGiveFromISR( taskMeasurementHandle, &xHigherPriorityTaskWoken );
+	vTaskNotifyGiveFromISR( taskAirquamHandle, NULL );
 }
 
 /**
@@ -191,16 +195,16 @@ void airquam_CallBack(void)
   */
 void vAirquam_taskFunction(void const * argument)
 {
-	uint32_t start, end;
-	printf("helloAir ");
+	//uint32_t start, end;
+
 	HAL_TIM_Base_Start_IT(&PERIODIC_TIMER_HANDLER);
   /* Infinite loop */
   for(;;)
   {
 		// notification take (binnary semaphore like)
-		ulTaskNotifyTake( pdTRUE, pdMS_TO_TICKS(1000) );  
+		ulTaskNotifyTake( pdTRUE, portMAX_DELAY  );  
 		
-		printf("start:%d   ", start=HAL_GetTick());
+		//printf("start:%d   ", start=HAL_GetTick());
 		airquam.current_meas = measure(); 
 		
 		if(airquam.current_meas.gps.latitude < -500 || airquam.current_meas.gps.longitude < -500)
@@ -208,9 +212,11 @@ void vAirquam_taskFunction(void const * argument)
 		else 
 			airquam.gps_state=1;
 		
+		airquam.wifi_state = wifi_available();
+		
 		draw_display(airquam);
-		end=HAL_GetTick();
-		printf("end:%d     time:%d\r\n", end, end-start);
+		//end=HAL_GetTick();
+		//printf("end:%d     time:%d\r\n", end, end-start);
     osDelay(1);
   }
 }

@@ -27,7 +27,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "stdio.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "airquam.h"
@@ -105,6 +105,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
+	printf("hello");
 	airquam_init();
   /* USER CODE END 2 */
 
