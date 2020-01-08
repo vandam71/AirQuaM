@@ -27,7 +27,7 @@ static void airquam_manage_sampling(void)
 
 	xSemaphoreTake( xAirquamSettingsMutex, pdMS_TO_TICKS(5000));	//wait for mutex
 	if( airquam->sampling_state && 
-			airquam->sampling_period <= current_tick-last_tick )
+			airquam->sampling_period*1000 <= current_tick-last_tick )
 	{
 		last_tick = current_tick;
 		
@@ -92,8 +92,8 @@ static void draw_display(airquam_t aqm)
 	}
 	else
 	{
-		sprintf(str,"  %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, 2000+aqm.current_meas.date.Year);
-		ssd1306_SetCursor(4, 2);	ssd1306_WriteString(str, Font_7x10, White);		//date
+		sprintf(str,"    %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, 2000+aqm.current_meas.date.Year);
+		ssd1306_SetCursor(0, 2);	ssd1306_WriteString(str, Font_7x10, White);		//date
 
 		sprintf(str,"T:%.1f'C   RH:%3.0f%%", aqm.current_meas.environment.T, aqm.current_meas.environment.RH);
 		ssd1306_SetCursor(0, 24); ssd1306_WriteString(str, Font_7x10, White);										//Temperature and humidity
@@ -167,6 +167,15 @@ void airquam_set_samplig_state(uint8_t state)
   */
 void airquam_init(void)
 {
+	//Enable the PWR clock
+	//__HAL_RCC_PWR_CLK_ENABLE();nao
+	//Enable access to the backup domain
+	//HAL_PWR_EnableBkUpAccess();
+	//Enable backup SRAM Clock
+	__HAL_RCC_BKPSRAM_CLK_ENABLE();//sim
+	//Enable the Backup SRAM low power Reg
+	//HAL_PWREx_EnableBkUpReg();nao
+	
 	
 	airquam = (airquam_t*)(BKP_AIRQUAM_BASE);
 	

@@ -47,8 +47,8 @@ static const char* measurement_post_str =
 	\"CO\": %d,\r\n\
 	\"CO2\": %d,\r\n\
 	\"TVOC\": %d,\r\n\
-	\"Temperature\": %d,\r\n\
-	\"Humidity\": %d\r\n\
+	\"Temperature\": %.1f,\r\n\
+	\"Humidity\": %.1f\r\n\
 }";		
 
 
@@ -75,6 +75,10 @@ static void esp8266_close_tcp(void);
   */
 inline void esp8266_enable(void)         
 {
+	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
+	__HAL_UART_FLUSH_DRREGISTER(&ESP8266_UART_HANDLER);
+	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
+	
 	HAL_GPIO_WritePin(WIFI_RST_GPIO_Port, WIFI_RST_Pin, GPIO_PIN_SET);
 }
 
@@ -227,7 +231,7 @@ uint8_t wifi_post_measurement(void)
 		meas.time.Hours, meas.time.Minutes,meas.time.Seconds,
 		2000+meas.date.Year, meas.date.Month, meas.date.Date,
 		meas.gps.latitude, meas.gps.longitude,
-		meas.gas.NO2, meas.gas.CO, meas.gas.CO2, meas.gas.TVOC,
+		meas.gas.NO2/1000, meas.gas.CO/1000, meas.gas.CO2/1000, meas.gas.TVOC,
 		meas.environment.T, meas.environment.RH
 	);
 
@@ -259,6 +263,7 @@ uint8_t wifi_get_station(void)
 	uint32_t sampleRate, state;
 	RTC_TimeTypeDef time;
 	RTC_DateTypeDef date;
+	uint16_t aux_year;
 	
 	do{
 		if(cnt++ >= WIFI_MAX_ERRORS)
@@ -296,20 +301,30 @@ uint8_t wifi_get_station(void)
 		airquam_set_samplig_period(sampleRate);
 	}
 	
-  ptr = strstr (get_buffer, "date");
+	memset(&time, 0, sizeof(RTC_TimeTypeDef));
+	memset(&date, 0, sizeof(RTC_DateTypeDef));
+	
+  ptr = strstr (get_buffer, "date\"");
 	if (ptr)
 	{
-		sscanf(ptr, "date\":\"20%d-%d-%dT%d:%d:%d%*s", (int*)&date.Year, (int*)&date.Month, (int*)&date.Date, (int*)&time.Hours, (int*)&time.Minutes, (int*)&time.Seconds);
+		sscanf(ptr, "date\":\"%d-%d-%dT%d:%d:%d%*s", 
+			(unsigned int*)&aux_year, (unsigned int*)&date.Month, (unsigned int*)&date.Date, 
+			(unsigned int*)&time.Hours, (unsigned int*)&time.Minutes, (unsigned int*)&time.Seconds);
+		
+		date.Year = aux_year-2000;
+			
+		if(	IS_RTC_HOUR24	(time.Hours)		&&
+			IS_RTC_MINUTES(time.Minutes)	&&
+			IS_RTC_SECONDS(time.Seconds)		)
+		HAL_RTC_SetTime(&hrtc, &time, RTC_FORMAT_BIN);
+			
 		
 		if(	IS_RTC_YEAR	(date.Year)		&&
 				IS_RTC_MONTH(date.Month)	&&
 				IS_RTC_DATE	(date.Date)			)
 			HAL_RTC_SetDate(&hrtc, &date, RTC_FORMAT_BIN);
 		
-		if(	IS_RTC_HOUR24	(time.Hours)		&&
-				IS_RTC_MINUTES(time.Minutes)	&&
-				IS_RTC_SECONDS(time.Seconds)		)
-			HAL_RTC_SetTime(&hrtc, &time, RTC_FORMAT_BIN);
+
 	}
 
   ptr = strstr (get_buffer, "state");
@@ -445,10 +460,6 @@ void wifi_init(void)
   */
 void vWifi_taskFunction(void const * argument)
 {
-	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
-	__HAL_UART_FLUSH_DRREGISTER(&ESP8266_UART_HANDLER);
-	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
-	
 	HAL_UART_Receive_IT(&WIFI_USER_UART_HANDLER, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
 	__HAL_UART_FLUSH_DRREGISTER(&WIFI_USER_UART_HANDLER);
 	HAL_UART_Receive_IT(&WIFI_USER_UART_HANDLER, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
@@ -503,7 +514,9 @@ void vWifi_taskFunction(void const * argument)
 		}while(0);
 		
 		esp8266_disable();
-		osDelay(1000*60*2);		//sleep 2 minutes
+		osDelay(1000*1);
+		//osDelay(1000*60*1);		//sleep 1 minutes
+
 	}
 	
 }

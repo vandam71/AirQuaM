@@ -56,7 +56,6 @@ osThreadId iddleTaskHandle;
 osThreadId taskWifiHandle;
 osThreadId taskGpsHandle;
 osThreadId taskAirquamHandle;
-osThreadId taskMeasurementHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -67,7 +66,6 @@ void StartDefaultTask(void const * argument);
 extern void vWifi_taskFunction(void const * argument);
 extern void vGps_taskFunction(void const * argument);
 extern void vAirquam_taskFunction(void const * argument);
-extern void vMeasurement_taskFunction(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -114,10 +112,6 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(taskAirquam, vAirquam_taskFunction, osPriorityNormal, 0, 1024);
   taskAirquamHandle = osThreadCreate(osThread(taskAirquam), NULL);
 
-  /* definition and creation of taskMeasurement */
-  osThreadDef(taskMeasurement, vMeasurement_taskFunction, osPriorityNormal, 0, 128);
-  taskMeasurementHandle = osThreadCreate(osThread(taskMeasurement), NULL);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -133,7 +127,6 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-    
     
     
     

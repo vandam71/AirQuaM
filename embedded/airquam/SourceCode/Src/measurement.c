@@ -10,9 +10,6 @@
 #include "cmsis_os.h"
 
 
-extern TaskHandle_t taskMeasurementHandle;	//handler for the measurement task
-
-
 static uint32_t*				measurement_bkp_buffer_items;		
 static measurement_t*		measurement_bkp_buffer;					
 
@@ -145,7 +142,10 @@ measurement_t measure(void)
 	meas.gas = gas_read();
 	meas.environment = environment_read();
 	
-	meas.gps = gps_read();
+	meas.gps.latitude=-1000;		
+	meas.gps.longitude=-1000;
+	if (gps_available())
+		meas.gps = gps_read();
 	
 	HAL_RTC_GetTime(&hrtc, &meas.time, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &meas.date, RTC_FORMAT_BIN);
@@ -153,13 +153,4 @@ measurement_t measure(void)
 	return meas;
 }
 
-
-void vMeasurement_taskFunction(void const * argument)
-{
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-}
 
