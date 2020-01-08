@@ -3,19 +3,21 @@
 
 #ifdef __cplusplus
  extern "C" {
-#endif
+#endif 
+
 	#include "stm32f7xx_hal.h"
 	#include "measurement.h"
+	#include "wifi.h"
 	#include "tim.h"
 	
-	const uint32_t stationID = 1;		//station serial number
+	#define  stationID 1		//station serial number
 	
 	
 	#define PERIODIC_TIMER_HANDLER  htim2
 	
-	#define BKP_MEM_SIZE 4094
-	#define	MAX_BUFFER_SIZE 	(uint32_t)( ( BKP_MEM_SIZE-sizeof(uint32_t) ) / sizeof(measurement_t) )
-	
+	#define BKP_AIRQUAM_BASE		(uint32_t)( BKPSRAM_BASE + WIFI_BKP_MEM_SIZE )
+	#define BKP_AIRQUAM_SIZE		sizeof(airquam_t)
+
 	#define DISPLAY_PAGE_TIME 10 //seconds
 	
 	typedef struct 

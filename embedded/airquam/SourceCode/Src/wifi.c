@@ -1,5 +1,4 @@
 #include "airquam.h"
-#include "wifi.h"
 #include "rtc.h"
 #include "usart.h"
 #include "string.h"
@@ -7,12 +6,10 @@
 #include "cmsis_os.h"
 
 
+static char* ssid;			//20
+static char* pass;			//20
+static char* server_ip;	//32
 
-
-static char* ssid = "thisisnotanetwork";//20
-static char* pass = "verysafepassword";//20
-
-static char* server_ip = "192.168.137.1:3000";//32
 
 static uint8_t wifi_availability = 0;
 
@@ -218,8 +215,12 @@ uint8_t wifi_establish_connection(void)
   * @brief  POST HTTP packet with a measurement object
   * @retval WIFI_SUCESS or WIFI_FAIL
   */
-uint8_t wifi_post_measurement(measurement_t meas)
+uint8_t wifi_post_measurement(void)
 {
+	measurement_t meas;
+	
+	meas = measurement_bkp_buffer_pop();
+	
 	//assemble post body
 	sprintf(post_buffer, measurement_post_str, 
 		stationID,
@@ -422,8 +423,11 @@ void wifi_CallBack(void)
   * @brief  init function for the wifi module
   * @retval None
   */
-void wifi_init(void)                                //This function contains AT commands that passes to connect_wifi()
+void wifi_init(void)
 {
+	ssid = 			(char*)(BKPSRAM_BASE);		//20
+	pass = 			(char*)(BKPSRAM_BASE+20);	//20
+	server_ip =	(char*)(BKPSRAM_BASE+40);	//32
 
 	xWifiOkSemaphore = xSemaphoreCreateBinary();
 	xWifiSettingsMutex = xSemaphoreCreateMutex();
@@ -487,7 +491,7 @@ void vWifi_taskFunction(void const * argument)
 			
 			osDelay(1000);
 			
-			//while()measurement available
+			while( measurement_bkp_buffer_isNotEmpty() )	//measurement available
 			{
 				if( wifi_post_measurement() == WIFI_FAIL )  	//post a measurement
 				{	

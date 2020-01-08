@@ -44,6 +44,7 @@ typedef struct
 
 void		gps_init(void);
 void		gps_CallBack(void);
+uint8_t gps_valid(gps_t);
 uint8_t gps_available(void);
 gps_t 	gps_read(void);
 void		vGps_taskFunction(void const * argument);
