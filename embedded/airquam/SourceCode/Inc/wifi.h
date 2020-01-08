@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "gpio.h"
+#include "measurement.h"
 
 #define ESP8266_RST  						WIFI_RST
 
@@ -20,7 +21,7 @@ enum wifi_return
 
 
 uint8_t wifi_establish_connection(void);
-uint8_t wifi_post_measurement(void);
+uint8_t wifi_post_measurement(measurement_t meas);
 uint8_t wifi_get_station(void);
 uint8_t wifi_available(void);
 void wifi_user_CommandHandler(void);

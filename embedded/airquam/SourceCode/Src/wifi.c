@@ -1,4 +1,6 @@
+#include "airquam.h"
 #include "wifi.h"
+#include "rtc.h"
 #include "usart.h"
 #include "string.h"
 #include "stdlib.h"
@@ -7,16 +9,12 @@
 
 
 
-const uint8_t stationID = 1;
-
-static uint8_t wifi_availability = 0;
-
-
 static char* ssid = "thisisnotanetwork";//20
 static char* pass = "verysafepassword";//20
 
 static char* server_ip = "192.168.137.1:3000";//32
 
+static uint8_t wifi_availability = 0;
 
 static char post_buffer[512];
 static char get_buffer[512];
@@ -220,11 +218,18 @@ uint8_t wifi_establish_connection(void)
   * @brief  POST HTTP packet with a measurement object
   * @retval WIFI_SUCESS or WIFI_FAIL
   */
-uint8_t wifi_post_measurement(void)
-{ //TODO: add measurement parameter
+uint8_t wifi_post_measurement(measurement_t meas)
+{
+	//assemble post body
 	sprintf(post_buffer, measurement_post_str, 
-		stationID,2,3,4,2000+5,6,7,(float)8,(float)-9,10,11,12,13,14,15);
-	
+		stationID,
+		meas.time.Hours, meas.time.Minutes,meas.time.Seconds,
+		2000+meas.date.Year, meas.date.Month, meas.date.Date,
+		meas.gps.latitude, meas.gps.longitude,
+		meas.gas.NO2, meas.gas.CO, meas.gas.CO2, meas.gas.TVOC,
+		meas.environment.T, meas.environment.RH
+	);
+
 	xSemaphoreTake( xWifiSettingsMutex, pdMS_TO_TICKS(1000));						//wait for mutex
 	sprintf(wifi_TXbuffer, post_str, 
 		server_ip, strlen(post_buffer), post_buffer);											//assemble string
@@ -251,8 +256,8 @@ uint8_t wifi_get_station(void)
 	uint8_t cnt = 0;
 	char* ptr = NULL;
 	uint32_t sampleRate, state;
-	uint32_t year, month, day;
-	uint32_t hour, minute, second;
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
 	
 	do{
 		if(cnt++ >= WIFI_MAX_ERRORS)
@@ -285,22 +290,38 @@ uint8_t wifi_get_station(void)
   //recover results
 	ptr = strstr(get_buffer, "sampleRate");
   if (ptr)
+	{
     sscanf(ptr, "sampleRate\":%d", &sampleRate);
+		airquam_set_samplig_period(sampleRate);
+	}
 	
   ptr = strstr (get_buffer, "date");
 	if (ptr)
-    sscanf(ptr, "date\":\"%d-%d-%dT%d:%d:%d%*s", &year, &month, &day, &hour, &minute, &second);
-	
+	{
+		sscanf(ptr, "date\":\"20%d-%d-%dT%d:%d:%d%*s", (int*)&date.Year, (int*)&date.Month, (int*)&date.Date, (int*)&time.Hours, (int*)&time.Minutes, (int*)&time.Seconds);
+		
+		if(	IS_RTC_YEAR	(date.Year)		&&
+				IS_RTC_MONTH(date.Month)	&&
+				IS_RTC_DATE	(date.Date)			)
+			HAL_RTC_SetDate(&hrtc, &date, RTC_FORMAT_BIN);
+		
+		if(	IS_RTC_HOUR24	(time.Hours)		&&
+				IS_RTC_MINUTES(time.Minutes)	&&
+				IS_RTC_SECONDS(time.Seconds)		)
+			HAL_RTC_SetTime(&hrtc, &time, RTC_FORMAT_BIN);
+	}
+
   ptr = strstr (get_buffer, "state");
 	if (ptr)
+	{
     sscanf(ptr, "state\":%d", &state);
-	
-	
+		airquam_set_samplig_state(sampleRate);
+	}
+
 	//{"stationID":1,"name":"Default Station","sampleRate":1,"date":"2020-01-07T02:01:30.728Z"}
 	
-	printf("\r\nGET STATION: samplerate: %d  ---- %4d-%02d-%02d, %d:%d:%d ",
-			sampleRate, year, month, day, hour, minute, second);
-	HAL_Delay(1000);
+	//printf("\r\nGET STATION: samplerate: %d  ---- %4d-%02d-%02d, %d:%d:%d ",
+	//		sampleRate, year, month, day, hour, minute, second);
 	
 	return WIFI_SUCESS;
 }
@@ -363,7 +384,7 @@ void wifi_user_CallBack(void)
 		wifi_user_buffer_index &= ~(1<<8); //keep inside the limits
 	}
 	//set the interrups for UART3 Rx again
-	HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
+	HAL_UART_Receive_IT(&WIFI_USER_UART_HANDLER, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
 }
 
 /**
@@ -374,7 +395,7 @@ void wifi_CallBack(void)
 {
 	static uint8_t aux;
 	aux = wifi_RXbuffer[wifi_RXbuffer_index];
-	HAL_UART_Transmit_IT(&huart3, &aux, 1);						//echo to uart3
+	HAL_UART_Transmit_IT(&WIFI_USER_UART_HANDLER, &aux, 1);						//echo to uart3
 	
 	if(wifi_RXbuffer[wifi_RXbuffer_index] == '\n')		//end of line
 	{
@@ -415,6 +436,7 @@ void wifi_init(void)                                //This function contains AT 
 
 /**
   * @brief  task function for the wifi task
+	* @param  argument: Not used 
   * @retval None
   */
 void vWifi_taskFunction(void const * argument)
@@ -423,9 +445,9 @@ void vWifi_taskFunction(void const * argument)
 	__HAL_UART_FLUSH_DRREGISTER(&ESP8266_UART_HANDLER);
 	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
 	
-	HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
-	__HAL_UART_FLUSH_DRREGISTER(&huart3);
-	HAL_UART_Receive_IT(&huart3, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
+	HAL_UART_Receive_IT(&WIFI_USER_UART_HANDLER, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
+	__HAL_UART_FLUSH_DRREGISTER(&WIFI_USER_UART_HANDLER);
+	HAL_UART_Receive_IT(&WIFI_USER_UART_HANDLER, (uint8_t*)&wifi_user_buffer[wifi_user_buffer_index], 1);
 
 	
 	while(1)	//setup, only exit if concluded correctly

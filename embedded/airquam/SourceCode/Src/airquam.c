@@ -155,6 +155,27 @@ void draw_display(airquam_t aqm)
 	return;
 }
 
+
+/**
+  * @brief  set method for sampling_period member
+	* @param	period	new sampling period in seconds
+  * @retval None
+  */
+void airquam_set_samplig_period(uint32_t period)
+{
+	airquam.sampling_period = period;
+}
+
+/**
+  * @brief  set method for sampling_state member
+	* @param	period	new sampling state
+  * @retval None
+  */
+void airquam_set_samplig_state(uint8_t state)
+{
+	airquam.sampling_state = state;
+}
+
 /**
   * @brief  init function for airquam molude
   * @retval None
@@ -191,6 +212,7 @@ void airquam_CallBack(void)
 
 /**
   * @brief  task function for the airquam task
+	* @param  argument: Not used 
   * @retval None
   */
 void vAirquam_taskFunction(void const * argument)

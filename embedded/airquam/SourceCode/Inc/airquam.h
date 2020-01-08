@@ -8,6 +8,9 @@
 	#include "measurement.h"
 	#include "tim.h"
 	
+	const uint32_t stationID = 1;		//station serial number
+	
+	
 	#define PERIODIC_TIMER_HANDLER  htim2
 	
 	#define BKP_MEM_SIZE 4094
@@ -26,7 +29,8 @@
 		
 	}airquam_t;
 
-	
+	void airquam_set_samplig_period(uint32_t);
+	void airquam_set_samplig_state(uint8_t);
 	void airquam_init(void);
 	void airquam_CallBack(void);
 	void vAirquam_taskFunction(void const * argument);

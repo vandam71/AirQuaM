@@ -124,6 +124,7 @@ gps_t gps_read(void)
 
 /**
   * @brief  task function for the gps task
+	* @param  argument: Not used 
   * @retval None
   */
 void vGps_taskFunction(void const * argument)
