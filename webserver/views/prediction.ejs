@@ -1,6 +1,42 @@
 <% include partials/header.ejs %>
     <!-- CODE FROM HERE -->
-    <h1>BUILT IN PROCESS</h1>
+    <h1>Prediction List</h1>
+    <table id="predictionTable">
+        <tr>
+            <td style="font-size: 150%;"><strong>ZoneID</strong></td>
+            <td style="font-size: 150%;"><strong>Time</strong></td>
+            <td style="font-size: 150%;"><strong>Date</strong></td>
+            <td style="font-size: 150%;"><strong>NO2 (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>CO (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>CO2 (ppm)</strong></td>
+            <td style="font-size: 150%;"><strong>TVOC (ppb)</strong></td>
+        </tr>
+        <% for(var i=0; i<list.length; i++) {%>
+            <tr>
+                <td>
+                    <%= list[i].ZoneID%>
+                </td>
+                <td>
+                    <%= list[i].time%>
+                </td>
+                <td>
+                    <%= list[i].date%>
+                </td>
+                <td>
+                    <%= list[i].NO2%>
+                </td>
+                <td>
+                    <%= list[i].CO%>
+                </td>
+                <td>
+                    <%= list[i].CO2%>
+                </td>
+                <td>
+                    <%= list[i].TVOC%>
+                </td>
+            </tr>
+            <% } %>
+    </table>
     <!-- CODE TILL HERE -->
     </div>
     </body>

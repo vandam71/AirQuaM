@@ -14,14 +14,17 @@ class Dataset:
         self.x_test = []
         self.y_test = []
 
-    def create_dataset(self, days_prediction=50, split_proportion=0.80):
+    def create_dataset(self, days_prediction=24, future_days=24):
         """Create the x and y values, both for training and for testing
         :param days_prediction: days to be used to predict future
-        :param split_proportion:
+        :param future_days: Days it predicts into the future
         """
+        if self.values.shape[0] < 24:
+            print('Not enough values to predict')
+            return None
         # Split the data set in the training set and test set
-        train = np.array(self.values[:int(self.values.shape[0] * split_proportion)])
-        test = np.array(self.values[int(self.values.shape[0] * split_proportion) - days_prediction:])
+        train = np.array(self.values[:int(self.values.shape[0] - future_days)])
+        test = np.array(self.values[int(self.values.shape[0] - future_days - days_prediction):])
 
         # Normalize data set in range [0-1]
         train = self.scaler.fit_transform(train)
