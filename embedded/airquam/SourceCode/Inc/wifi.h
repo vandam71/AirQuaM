@@ -3,13 +3,16 @@
 
 #include "stdint.h"
 #include "gpio.h"
+#include "measurement.h"
 
 #define ESP8266_RST  						WIFI_RST
 
 #define ESP8266_UART_HANDLER  	huart4
 #define WIFI_USER_UART_HANDLER  huart3
 
+#define WIFI_BKP_MEM_SIZE  		(20+20+32)
 #define WIFI_MAX_ERRORS  		5
+
 
  
 enum wifi_return 

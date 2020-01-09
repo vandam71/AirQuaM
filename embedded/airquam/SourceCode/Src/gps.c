@@ -114,6 +114,18 @@ uint8_t gps_available(void)
 }
 
 /**
+  * @brief  check if a given gps_t object is valid
+  * @retval GPS_SUCESS or GPS_FAIL
+  */
+uint8_t gps_valid(gps_t g)
+{
+	if( fabs(g.latitude) < 180.0 || fabs(g.longitude) < 90.0)
+		return GPS_SUCESS;
+	else 
+		return GPS_FAIL;
+}
+
+/**
   * @brief  get method for the gps module
   * @retval gps_t object
   */
@@ -124,6 +136,7 @@ gps_t gps_read(void)
 
 /**
   * @brief  task function for the gps task
+	* @param  argument: Not used 
   * @retval None
   */
 void vGps_taskFunction(void const * argument)

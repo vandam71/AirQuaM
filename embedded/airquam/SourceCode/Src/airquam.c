@@ -6,57 +6,42 @@
 #include "wifi.h" 
 #include "ssd1306.h"
 
-static airquam_t airquam;
+static volatile airquam_t*			airquam;
 
-static measurement_t		*bkp_buffer;					
-static uint32_t 				*bkp_buffer_items;		
+static SemaphoreHandle_t xAirquamSettingsMutex;
 
 extern TaskHandle_t taskAirquamHandle;	//handler for the airquam task
 
 
+
 /**
-  * @brief  clear the non volatile buffer
+  * @brief  manage the sampling to be sent to the remote server
   * @retval None
   */
-static inline void bkp_buffer_erase(void)
+static void airquam_manage_sampling(void)
 {
-	*bkp_buffer_items = 0;
-	memset(bkp_buffer, 0, MAX_BUFFER_SIZE*sizeof(measurement_t)); 	
-}
+	static uint32_t last_tick;
+	uint32_t current_tick;
 	
-/**
-  * @brief  initialize measurement buffer on non volatile buffer
-		@note		This function will verify if meaningfull data is present, if not the buffer is reset
-  * @retval None
-  */
-static void bkp_buffer_init(void)
-{
-	bkp_buffer_items	= 	(uint32_t*)(BKPSRAM_BASE);
-	bkp_buffer	=		(measurement_t*)( (BKPSRAM_BASE) + sizeof(uint32_t) );
-	
-	measurement_t	null_meas;
-	memset(&null_meas, 0, sizeof(measurement_t)); 
-	
-	//verify buffer integrity
-	if( *bkp_buffer_items > MAX_BUFFER_SIZE )		//size variable is corrupted
+	current_tick =  HAL_GetTick();
+
+	xSemaphoreTake( xAirquamSettingsMutex, pdMS_TO_TICKS(5000));	//wait for mutex
+	if( airquam->sampling_state && 
+			airquam->sampling_period*1000 <= current_tick-last_tick )
 	{
-		bkp_buffer_erase();
-		return;
+		last_tick = current_tick;
+		
+		if( measurement_bkp_buffer_isNotFull() )
+			measurement_bkp_buffer_push(airquam->current_meas);
 	}
-	for(int i=*bkp_buffer_items; i<MAX_BUFFER_SIZE; i++)	//verify integrity
-		if( memcmp( &bkp_buffer[i], &null_meas, sizeof(measurement_t) ) != 0)		//if corrupted data or noise, reset buffer
-		{
-			bkp_buffer_erase();
-			return;
-		}	
-	return;
+	xSemaphoreGive( xAirquamSettingsMutex );											//release mutex
 }
 
 /**
   * @brief  routine to draw a splash screen while the sensors, drivers and modules are being initialized
   * @retval None
   */
-void draw_splash(void)
+static void draw_splash(void)
 {
 	ssd1306_Fill(Black);
 	ssd1306_SetCursor(8, 18);
@@ -69,7 +54,7 @@ void draw_splash(void)
 	*	@param	aqm airqham_t object to be translated into display info
   * @retval None
   */
-void draw_display(airquam_t aqm)
+static void draw_display(airquam_t aqm)
 {
 	static uint8_t page=0;
 	static uint32_t last_page_tick=0;
@@ -107,8 +92,8 @@ void draw_display(airquam_t aqm)
 	}
 	else
 	{
-		sprintf(str,"  %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, 2000+aqm.current_meas.date.Year);
-		ssd1306_SetCursor(4, 2);	ssd1306_WriteString(str, Font_7x10, White);		//date
+		sprintf(str,"    %2d-%02d-%4d", aqm.current_meas.date.Date, aqm.current_meas.date.Month, 2000+aqm.current_meas.date.Year);
+		ssd1306_SetCursor(0, 2);	ssd1306_WriteString(str, Font_7x10, White);		//date
 
 		sprintf(str,"T:%.1f'C   RH:%3.0f%%", aqm.current_meas.environment.T, aqm.current_meas.environment.RH);
 		ssd1306_SetCursor(0, 24); ssd1306_WriteString(str, Font_7x10, White);										//Temperature and humidity
@@ -155,26 +140,57 @@ void draw_display(airquam_t aqm)
 	return;
 }
 
+
+/**
+  * @brief  set method for sampling_period member
+	* @param	period	new sampling period in seconds
+  * @retval None
+  */
+void airquam_set_samplig_period(uint32_t period)
+{
+	airquam->sampling_period = period;
+}
+
+/**
+  * @brief  set method for sampling_state member
+	* @param	period	new sampling state
+  * @retval None
+  */
+void airquam_set_samplig_state(uint8_t state)
+{
+	airquam->sampling_state = state;
+}
+
 /**
   * @brief  init function for airquam molude
   * @retval None
   */
 void airquam_init(void)
 {
-	airquam.sampling_period = 60;
-	airquam.sampling_state = 0;
-	airquam.gps_state = 0;
-	airquam.wifi_state = 0;
+	//Enable the PWR clock
+	//__HAL_RCC_PWR_CLK_ENABLE();nao
+	//Enable access to the backup domain
+	//HAL_PWR_EnableBkUpAccess();
+	//Enable backup SRAM Clock
+	__HAL_RCC_BKPSRAM_CLK_ENABLE();//sim
+	//Enable the Backup SRAM low power Reg
+	//HAL_PWREx_EnableBkUpReg();nao
+	
+	
+	airquam = (airquam_t*)(BKP_AIRQUAM_BASE);
+	
+	airquam->sampling_period = 60;
+	airquam->sampling_state = 0;
+	airquam->gps_state = 0;
+	airquam->wifi_state = 0;
+	
+	xAirquamSettingsMutex = xSemaphoreCreateMutex();
 	
 	gps_init();
-	wifi_init();
 	ssd1306_Init();
 	draw_splash();
-	
-	
+	wifi_init();
 	measurement_init();
-	bkp_buffer_init();
-	
 	
 }
 
@@ -191,12 +207,13 @@ void airquam_CallBack(void)
 
 /**
   * @brief  task function for the airquam task
+	* @param  argument: Not used 
   * @retval None
   */
 void vAirquam_taskFunction(void const * argument)
 {
 	//uint32_t start, end;
-
+	
 	HAL_TIM_Base_Start_IT(&PERIODIC_TIMER_HANDLER);
   /* Infinite loop */
   for(;;)
@@ -205,16 +222,18 @@ void vAirquam_taskFunction(void const * argument)
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY  );  
 		
 		//printf("start:%d   ", start=HAL_GetTick());
-		airquam.current_meas = measure(); 
+		airquam->current_meas = measure(); 
 		
-		if(airquam.current_meas.gps.latitude < -500 || airquam.current_meas.gps.longitude < -500)
-			airquam.gps_state=0;
-		else 
-			airquam.gps_state=1;
+		airquam->gps_state=0;
+		if( gps_valid(airquam->current_meas.gps) )
+		{
+			airquam->gps_state=1;
+			airquam_manage_sampling();
+		}
 		
-		airquam.wifi_state = wifi_available();
+		airquam->wifi_state = wifi_available();
 		
-		draw_display(airquam);
+		draw_display(*airquam);
 		//end=HAL_GetTick();
 		//printf("end:%d     time:%d\r\n", end, end-start);
     osDelay(1);
