@@ -19,9 +19,9 @@ class Dataset:
         :param days_prediction: days to be used to predict future
         :param future_days: Days it predicts into the future
         """
-        if self.values.shape[0] < 24:
+        if self.values.shape[0] < days_prediction + future_days:
             print('Not enough values to predict')
-            return None
+            exit(0)
         # Split the data set in the training set and test set
         train = np.array(self.values[:int(self.values.shape[0] - future_days)])
         test = np.array(self.values[int(self.values.shape[0] - future_days - days_prediction):])

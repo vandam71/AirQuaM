@@ -59,18 +59,20 @@ def program():
         df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={id}')
         data = Measurement(df).initialize().split()
         zones[i] = Zone(id, data)
-    zones[0].predict(retrain=False)
+
+    zone = zones[1]
+    zone.predict(retrain=False)
 
     fig, ax2 = plt.subplots(figsize=(8, 4))
-    plt.plot(zones[0].data.temp, color='blue', label="True")
-    ax2.plot(range(len(zones[0].data.temp), len(zones[0].data.temp) + len(zones[0].prediction.temp)),
-             zones[0].prediction.temp, color='red',
+    plt.plot(zone.data.temp, color='blue', label="True")
+    ax2.plot(range(len(zone.data.temp), len(zone.data.temp) + len(zone.prediction.temp)),
+             zone.prediction.temp, color='red',
              label="Predicted")
     plt.legend()
     plt.show()
 
-    df = zones[0].prediction.to_df()
-    zones[0].prediction.add_to_db(df)
+    df = zone.prediction.to_df()
+    zone.prediction.add_to_db(df)
 
     timer.stop()
     con.close_connection()
