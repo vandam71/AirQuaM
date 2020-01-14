@@ -33,12 +33,12 @@ def populate():
                     "date": str(udate),
                     "GPSlatitude": 41.53,
                     "GPSlongitude": -8.30,
-                    "NO2": sine[i] * 10,
+                    "NO2": sine[i] * 100,
                     "CO": sine[i] * 100,
-                    "CO2": sine[i] * 1000,
-                    "TVOC": sine[i] * 10000,
-                    "Temperature": sine[i] * 10,
-                    "Humidity": sine[i] * 10
+                    "CO2": sine[i] * 100,
+                    "TVOC": sine[i] * 100,
+                    "Temperature": sine[i] * 100,
+                    "Humidity": sine[i] * 100
                     }
             http.post('http://airquam.herokuapp.com/data/measurement', data=data)
         except:
@@ -59,18 +59,22 @@ def program():
         df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={id}')
         data = Measurement(df).initialize().split()
         zones[i] = Zone(id, data)
-    zones[3].predict(retrain=False)
+
+    zone = zones[1]
+    zone.predict(retrain=False)
 
     fig, ax2 = plt.subplots(figsize=(8, 4))
-    plt.plot(zones[3].data.temp, color='blue', label="True")
-    ax2.plot(range(len(zones[3].data.temp), len(zones[3].data.temp) + len(zones[3].prediction.temp)),
-             zones[3].prediction.temp, color='red',
+    plt.plot(zone.data.temp, color='blue', label="True")
+    ax2.plot(range(len(zone.data.temp), len(zone.data.temp) + len(zone.prediction.temp)),
+             zone.prediction.temp, color='red',
              label="Predicted")
     plt.legend()
     plt.show()
 
+    df = zone.prediction.to_df()
+    zone.prediction.add_to_db(df)
+
     timer.stop()
-    plt.show()
     con.close_connection()
 
 

@@ -17,19 +17,16 @@ class Model:
         :param id: zone id
         :param el: element tag
         """
-        timer = Timer('Model').start()
         if os.path.exists(f'prediction/{id}-{el}.h5'):
             print(f'[Model] Loading model from prediction/{id}-{el}.h5')
             self.model = load_model(f'prediction/{id}-{el}.h5')
         else:
             print(f'[Model] No trained file stored for Zone {id} - {el}')
-        timer.stop()
 
     def build_model(self, x_train):
         """Build the model and compile it
         :param x_train: to check how many values it will have to train
         """
-        timer = Timer('Model').start()
         self.model.add(LSTM(units=96, return_sequences=True, input_shape=(x_train.shape[1], 1)))
         self.model.add(Dropout(rate=0.2))
         self.model.add(LSTM(units=96, return_sequences=True))
@@ -41,7 +38,6 @@ class Model:
         self.model.add(Dense(units=1))
         self.model.compile(loss='mean_squared_error', optimizer='adam')
         print('[Model] Model Compiled')
-        timer.stop()
 
     def train(self, x_train, y_train, id, el, epochs=3, batch_size=32):
         """Train the neural network and save it
@@ -69,9 +65,7 @@ class Model:
         :param x_test: 'x' values used for testing
         :param y_test: value that is it supposed to predict
         """
-        timer = Timer('Model').start()
         print('[Model] Evaluation:', self.model.evaluate(x_test, y_test))
-        timer.stop()
 
     def predict(self, x_test, scaler):
         """Predict Next value
@@ -79,9 +73,6 @@ class Model:
         :param scaler: scaled used to normalize the set
         :return: returns predicted value
         """
-        timer = Timer('Model').start()
-        print('[Model] Predicting...')
         prediction = self.model.predict(x_test)
         prediction = scaler.inverse_transform(prediction)
-        timer.stop()
         return prediction

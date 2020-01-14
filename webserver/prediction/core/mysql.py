@@ -19,9 +19,9 @@ class MySQLdb:
             self.db = connector.connect(host=self.host, user=self.user, password=self.password, database=self.database)
         except connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
+                print("['MySQL] Something is wrong with your user name or password")
             if err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
+                print("['MySQL] Database does not exist")
             else:
                 print(err)
         return self

@@ -10,15 +10,15 @@ class Zone:
         self.prediction = Prediction(self.id)
 
     def predict(self, retrain=True):
-        self.prediction.no2 = self.predict_no2(retrain)
-        self.prediction.co = self.predict_co(retrain)
-        self.prediction.co2 = self.predict_co2(retrain)
-        self.prediction.tvoc = self.predict_tvoc(retrain)
-        self.prediction.temp = self.predict_temp(retrain)
-        self.prediction.rh = self.predict_rh(retrain)
+        self.prediction.no2 = (self.predict_no2(retrain)).astype(int)
+        self.prediction.co = (self.predict_co(retrain)).astype(int)
+        self.prediction.co2 = (self.predict_co2(retrain)).astype(int)
+        self.prediction.tvoc = (self.predict_tvoc(retrain)).astype(int)
+        self.prediction.temp = (self.predict_temp(retrain)).astype(int)
+        self.prediction.rh = (self.predict_rh(retrain)).astype(int)
 
     def predict_no2(self, retrain):
-        dataset = Dataset(self.data.no2).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.no2).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
@@ -29,7 +29,7 @@ class Zone:
         return prediction
 
     def predict_co(self, retrain):
-        dataset = Dataset(self.data.co).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.co).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
@@ -40,7 +40,7 @@ class Zone:
         return prediction
 
     def predict_co2(self, retrain):
-        dataset = Dataset(self.data.co2).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.co2).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
@@ -51,7 +51,7 @@ class Zone:
         return prediction
 
     def predict_tvoc(self, retrain):
-        dataset = Dataset(self.data.tvoc).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.tvoc).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
@@ -62,7 +62,7 @@ class Zone:
         return prediction
 
     def predict_temp(self, retrain):
-        dataset = Dataset(self.data.temp).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.temp).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
@@ -73,7 +73,7 @@ class Zone:
         return prediction
 
     def predict_rh(self, retrain):
-        dataset = Dataset(self.data.rh).create_dataset(days_prediction=24, split_proportion=0.80)
+        dataset = Dataset(self.data.rh).create_dataset()
         model = Model()
         if retrain:
             model.build_model(dataset.x_train)
