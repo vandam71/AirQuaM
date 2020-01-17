@@ -22,7 +22,7 @@ class Prediction:
                 {'ZoneID': self.zone, 'date': self.date, 'time': time.strftime("%H:%M:%S"),
                  'NO2': int(self.no2.item(i)),
                  'CO': int(self.co.item(i)),
-                 'CO2': int(self.co.item(i)),
+                 'CO2': int(self.co2.item(i)),
                  'TVOC': int(self.tvoc.item(i)), 'Temperature': int(self.temp.item(i)),
                  'Humidity': int(self.rh.item(i))},
                 ignore_index=True)

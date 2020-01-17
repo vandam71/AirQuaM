@@ -2,72 +2,50 @@
     <!-- CODE FROM HERE -->
     <script>
         function toDo() {
-            window.location.href = "/info/zone/<%= zoneInfo.ZoneID%>/prediction"
+            window.location.href = "/info/zone/<%= zoneInfo.ZoneID%>"
         }
     </script>
     <button id="btn2" onclick="window.location.reload()">Refresh</button>
-    <button id="btn2" onclick="toDo()">Prediction</button>
+    <button id="btn2" onclick="toDo()">Back</button>
     <h1>Zone
-        <%= zoneInfo.ZoneID%>
+        <%= zoneInfo.ZoneID%> - Daily Prediction for:
+            <%= list[0].date%>
     </h1>
-    <h2>Latitude
-        <%= zoneInfo.ZoneLatitude%> Longitude
+    <h2> Latitude
+        <%= zoneInfo.ZoneLatitude%>
+            Longitude
             <%= zoneInfo.ZoneLongitude%>
     </h2>
     <div class="grid-container">
         <div class="itemtable" style="height: 240px; overflow: auto; width: auto;">
             <table>
                 <tr>
-                    <td><strong>ID</strong></td>
-                    <td><strong>Station ID</strong></td>
-                    <td><strong>Time</strong></td>
-                    <td><strong>Date</strong></td>
-                    <td><strong>GPS Latitude</strong></td>
-                    <td><strong>GPS Longitude</strong></td>
-                    <td><strong>NO2 (ppm)</strong></td>
-                    <td><strong>CO (ppm)</strong></td>
-                    <td><strong>CO2 (ppm)</strong></td>
-                    <td><strong>TVOC (ppb)</strong></td>
-                    <td><strong>Temperature (ºC)</strong></td>
-                    <td><strong>Humidity (%)</strong></td>
+                    <td style="font-size: 150%;"><strong>Time</strong></td>
+                    <td style="font-size: 150%;"><strong>Date</strong></td>
+                    <td style="font-size: 150%;"><strong>NO2 (ppm)</strong></td>
+                    <td style="font-size: 150%;"><strong>CO (ppm)</strong></td>
+                    <td style="font-size: 150%;"><strong>CO2 (ppm)</strong></td>
+                    <td style="font-size: 150%;"><strong>TVOC (ppb)</strong></td>
                 </tr>
-                <% for(var i=0; i<batch.length; i++) {%>
+                <% for(var i=0; i<list.length; i++) {%>
                     <tr>
-                        <td>
-                            <%= batch[i].measurementID%>
-                        </td>
-                        <td>
-                            <%= batch[i].stationID%>
-                        </td>
                         <td id="time<%=i%>">
-                            <%= batch[i].time%>
+                            <%= list[i].time%>
                         </td>
                         <td id="date<%=i%>">
-                            <%= batch[i].date%>
-                        </td>
-                        <td>
-                            <%= batch[i].GPSlatitude%>
-                        </td>
-                        <td>
-                            <%= batch[i].GPSlongitude%>
+                            <%= list[i].date%>
                         </td>
                         <td id="no<%=i%>">
-                            <%= batch[i].NO2%>
+                            <%= list[i].NO2%>
                         </td>
                         <td id="co<%=i%>">
-                            <%= batch[i].CO%>
+                            <%= list[i].CO%>
                         </td>
                         <td id="eco<%=i%>">
-                            <%= batch[i].CO2%>
+                            <%= list[i].CO2%>
                         </td>
                         <td id="tvoc<%=i%>">
-                            <%= batch[i].TVOC%>
-                        </td>
-                        <td id="temp<%=i%>">
-                            <%= batch[i].Temperature%>
-                        </td>
-                        <td id="rh<%=i%>">
-                            <%= batch[i].Humidity%>
+                            <%= list[i].TVOC%>
                         </td>
                     </tr>
                     <% } %>
@@ -113,25 +91,14 @@
             }));
 
             markerC.setMap(map);
-
-            <% for (var i = 0; i < batch.length; i++) { %>
-            var marker = new google.maps.Marker({
-                map: map,
-                position: {
-                    lat: parseFloat(<%= batch[i].GPSlatitude %>),
-                    lng: parseFloat(<%= batch[i].GPSlongitude %>),
-                },
-            });
-            marker.setMap(map);
-            <% } %>;
         }
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClIURvk2YvL89LjCcv2-HS9FQzvOLqBdM&callback=initMap">
     </script>
     <script type="text/javascript">
         /*google.charts.load('current', {
-                                                                                                                    packages: ['corechart']
-                                                                                                                });*/
+                                                                    packages: ['corechart']
+                                                                });*/
         google.charts.load('current', {
             packages: ['line']
         });
@@ -140,7 +107,7 @@
 
         function drawChart() {
 
-            var total = <%= batch.length %>;
+            var total = <%= list.length %>;
 
             var data = new google.visualization.DataTable();
             data.addColumn('datetime', 'Date');
@@ -148,16 +115,12 @@
             data.addColumn('number', 'CO');
             data.addColumn('number', 'CO2');
             data.addColumn('number', 'TVOC');
-            data.addColumn('number', 'Temperature');
-            data.addColumn('number', 'Humidity');
 
-            for (var i = 0; i < total; i++) {
+            for (var i = 0; i < 24; i++) {
                 var no2 = parseInt(document.getElementById("no" + i).innerHTML);
                 var co = parseInt(document.getElementById("co" + i).innerHTML);
                 var co2 = parseInt(document.getElementById("eco" + i).innerHTML);
                 var tvoc = parseInt(document.getElementById("tvoc" + i).innerHTML);
-                var temp = parseFloat(document.getElementById("temp" + i).innerHTML);
-                var rh = parseFloat(document.getElementById("rh" + i).innerHTML);
 
                 var date = document.getElementById("date" + i).innerHTML;
                 var time = document.getElementById("time" + i).innerHTML;
@@ -167,7 +130,7 @@
 
                 var datetime = new Date(parseInt(parsedDate[0]), parseInt(parsedDate[1]) - 1, parseInt(parsedDate[2]), parseInt(parsedTime[0]), parseInt(parsedTime[1]), parseInt(parsedTime[2]), 00)
 
-                data.addRow([datetime, no2, co, co2, tvoc, temp, rh]);
+                data.addRow([datetime, no2, co, co2, tvoc]);
             };
 
             /*var options = {
@@ -219,12 +182,6 @@
                     3: {
                         targetAxisIndex: 1
                     },
-                    4: {
-                        targetAxisIndex: 0
-                    },
-                    5: {
-                        targetAxisIndex: 0
-                    }
                 }
             };
             var chart = new google.charts.Line(document.getElementById('chart'));

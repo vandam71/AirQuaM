@@ -3,3 +3,4 @@ npm-debug.log
 .vscode
 prediction/venv/
 cypress/
+prediction/prediction

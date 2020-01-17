@@ -21,7 +21,6 @@ class Dataset:
         """
         if self.values.shape[0] < days_prediction + future_days:
             print('Not enough values to predict')
-            exit(0)
         # Split the data set in the training set and test set
         train = np.array(self.values[:int(self.values.shape[0] - future_days)])
         test = np.array(self.values[int(self.values.shape[0] - future_days - days_prediction):])

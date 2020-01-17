@@ -1,5 +1,4 @@
 import threading
-import signal
 
 
 def signal_handler(signum, frame):

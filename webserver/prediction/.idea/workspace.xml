@@ -2,6 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc215a4c-daa1-4bc0-b4d9-dcbc2f591686" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/airquam/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/airquam/prediction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/task.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lstm/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/lstm/dataset.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prediction/1-co.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/1-co.h5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prediction/1-co2.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/1-co2.h5" afterDir="false" />
@@ -9,7 +14,22 @@
       <change beforePath="$PROJECT_DIR$/prediction/1-rh.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/1-rh.h5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prediction/1-temp.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/1-temp.h5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prediction/1-tvoc.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/1-tvoc.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-co.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-co.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-co2.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-co2.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-no2.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-no2.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-rh.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-rh.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-temp.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-temp.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/11-tvoc.h5" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/11-tvoc.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-co.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-co2.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-no2.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-rh.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-temp.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/31-tvoc.h5" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../routes/info/dynamicZone.js" beforeDir="false" afterPath="$PROJECT_DIR$/../routes/info/dynamicZone.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../views/error.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/../views/error.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../views/zoneInfo.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/../views/zoneInfo.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +59,7 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/stock_market-Predictor" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -109,50 +129,55 @@
     </state>
     <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578157003612" />
     <state x="778" y="311" key="FileChooserDialogImpl/70.27.1850.1053@70.27.1850.1053" timestamp="1578433640742" />
-    <state width="1827" height="324" key="GridCell.Tab.0.bottom" timestamp="1578664833180">
+    <state width="1827" height="156" key="GridCell.Tab.0.bottom" timestamp="1579201633754">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.0.bottom/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="324" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1578664833180" />
-    <state width="1827" height="324" key="GridCell.Tab.0.center" timestamp="1578664833180">
+    <state width="1827" height="323" key="GridCell.Tab.0.bottom/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1579032550224" />
+    <state width="1827" height="156" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1579201633754" />
+    <state width="1827" height="156" key="GridCell.Tab.0.center" timestamp="1579201633754">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.0.center/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="324" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1578664833180" />
-    <state width="1827" height="324" key="GridCell.Tab.0.left" timestamp="1578664833179">
+    <state width="1827" height="323" key="GridCell.Tab.0.center/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1579032550224" />
+    <state width="1827" height="156" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1579201633754" />
+    <state width="1827" height="156" key="GridCell.Tab.0.left" timestamp="1579201633754">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.0.left/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="324" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1578664833179" />
-    <state width="1827" height="324" key="GridCell.Tab.0.right" timestamp="1578664833180">
+    <state width="1827" height="323" key="GridCell.Tab.0.left/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1579032550224" />
+    <state width="1827" height="156" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1579201633754" />
+    <state width="1827" height="156" key="GridCell.Tab.0.right" timestamp="1579201633754">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.0.right/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="324" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1578664833180" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1578323841174">
+    <state width="1827" height="323" key="GridCell.Tab.0.right/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1579032550224" />
+    <state width="1827" height="156" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1579201633754" />
+    <state width="1827" height="339" key="GridCell.Tab.1.bottom" timestamp="1578679103485">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1578323841174" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1578323841174">
+    <state width="1827" height="339" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1578679103485" />
+    <state width="1827" height="339" key="GridCell.Tab.1.center" timestamp="1578679103484">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1578323841174" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1578323841173">
+    <state width="1827" height="339" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1578679103484" />
+    <state width="1827" height="339" key="GridCell.Tab.1.left" timestamp="1578679103484">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1578323841173" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1578323841174">
+    <state width="1827" height="339" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1578679103484" />
+    <state width="1827" height="339" key="GridCell.Tab.1.right" timestamp="1578679103484">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578181994463" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1578323841174" />
-    <state x="484" y="188" key="SettingsEditor" timestamp="1578147115470">
+    <state width="1827" height="339" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1578679103484" />
+    <state x="778" y="212" width="1022" height="737" key="SettingsEditor" timestamp="1578773136219">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state x="484" y="188" key="SettingsEditor/70.27.1850.1053/1920.0.1920.1080@70.27.1850.1053" timestamp="1578147115470" />
+    <state x="778" y="212" width="1022" height="737" key="SettingsEditor/70.27.1850.1053@70.27.1850.1053" timestamp="1578773136219" />
+    <state width="600" height="424" key="javadoc.popup" timestamp="1578773144868">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="600" height="424" key="javadoc.popup/70.27.1850.1053@70.27.1850.1053" timestamp="1578773144868" />
     <state x="658" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1578156631237">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>

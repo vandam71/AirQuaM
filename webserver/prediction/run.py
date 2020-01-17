@@ -3,7 +3,6 @@ __version__ = "1.0.0"
 
 import signal
 import time
-import matplotlib.pyplot as plt
 import datetime
 import pandas as pd
 import numpy as np
@@ -54,25 +53,19 @@ def program():
     zones = []
     for i in range(result.shape[0]):
         zones.append(result['ZoneID'][i])
-    for i in range(len(zones)):
+    total = len(zones)
+    for i in range(total):
         id = zones[i]
         df = con.read_db(f'SELECT * FROM Measurement WHERE ZoneID={id}')
         data = Measurement(df).initialize().split()
         zones[i] = Zone(id, data)
 
-    zone = zones[1]
-    zone.predict(retrain=False)
-
-    fig, ax2 = plt.subplots(figsize=(8, 4))
-    plt.plot(zone.data.temp, color='blue', label="True")
-    ax2.plot(range(len(zone.data.temp), len(zone.data.temp) + len(zone.prediction.temp)),
-             zone.prediction.temp, color='red',
-             label="Predicted")
-    plt.legend()
-    plt.show()
-
-    df = zone.prediction.to_df()
-    zone.prediction.add_to_db(df)
+    for i in range(total):
+        try:
+            zones[i].predict()
+            zones[i].prediction.add_to_db(zones[i].prediction.to_df())
+        except:
+            pass
 
     timer.stop()
     con.close_connection()
