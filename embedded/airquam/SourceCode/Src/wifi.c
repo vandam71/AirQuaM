@@ -26,6 +26,7 @@ static volatile uint8_t wifi_user_buffer_index=0;
 
 static SemaphoreHandle_t xWifiOkSemaphore;
 static SemaphoreHandle_t xWifiSettingsMutex;
+static SemaphoreHandle_t xWifiAvailabilityMutex;
 
 
 static const char* post_str = 
@@ -80,6 +81,7 @@ inline void esp8266_enable(void)
 	HAL_UART_Receive_IT(&ESP8266_UART_HANDLER, (uint8_t*)&wifi_RXbuffer[wifi_RXbuffer_index], 1);	
 	
 	HAL_GPIO_WritePin(WIFI_RST_GPIO_Port, WIFI_RST_Pin, GPIO_PIN_SET);
+	osDelay(5000); //give time to wake up
 }
 
 /**
@@ -189,15 +191,6 @@ void esp8266_send_tcp(char* packet)
 inline void esp8266_close_tcp(void)         
 {
 	esp8266_send_command("AT+CIPCLOSE"); 
-}
-
-/**
-  * @brief  check if a wifi connection is available;
-	* @retval availability state (1: yes, 0: no)
-  */
-uint8_t wifi_available(void)
-{
-	return wifi_availability;
 }
 
 /**
@@ -343,6 +336,33 @@ uint8_t wifi_get_station(void)
 }
 
 /**
+  * @brief  check if a wifi connection is available;
+	* @retval availability state (1: yes, 0: no)
+  */
+uint8_t wifi_available(void)
+{
+	uint8_t ret;
+	xSemaphoreTake( xWifiAvailabilityMutex, pdMS_TO_TICKS(1000));						//wait for mutex
+	ret = wifi_availability;
+	xSemaphoreGive( xWifiAvailabilityMutex );
+	return ret;
+}
+
+/**
+  * @brief  function to set the availability flag
+	*	@param 	av	new availability
+	*	@note		The acess to the variable should be syncronized by a mutex
+  * @retval None
+  */
+void wifi_set_availability(uint8_t av)
+{
+	xSemaphoreTake( xWifiAvailabilityMutex, pdMS_TO_TICKS(1000));						//wait for mutex
+	wifi_availability = av;
+	xSemaphoreGive( xWifiAvailabilityMutex );
+}
+
+
+/**
   * @brief  Handle user commands
   * @retval None
   */
@@ -482,21 +502,20 @@ void vWifi_taskFunction(void const * argument)
 	for(;;)		//infinite loop
 	{	
 		esp8266_enable();
-		osDelay(5000);
 		
 		do{
 			if( wifi_establish_connection() == WIFI_FAIL )  //connect to a access point
 			{	
-				wifi_availability = 0;
+				wifi_set_availability(WIFI_FAIL);
 				break;
 			}
 			
-			wifi_availability = 1;
+			wifi_set_availability(WIFI_SUCESS);
 			osDelay(500);
 			
 			if( wifi_get_station() == WIFI_FAIL )  					//get latest settings from server
 			{	
-				wifi_availability = 0;
+				wifi_set_availability(WIFI_FAIL);
 				break;
 			}
 			
@@ -506,7 +525,7 @@ void vWifi_taskFunction(void const * argument)
 			{
 				if( wifi_post_measurement() == WIFI_FAIL )  	//post a measurement
 				{	
-					wifi_availability = 0;
+					wifi_set_availability(WIFI_FAIL);
 					break;
 				}
 			}

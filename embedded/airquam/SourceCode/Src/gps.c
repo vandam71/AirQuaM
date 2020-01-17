@@ -13,6 +13,9 @@ static uint8_t buff_arr[2][512]={0};					//declare two buffers
 static volatile uint8_t buff_index=0;					//
 static volatile uint8_t buff_receiving = 0;		//which buffer is receiveing
 
+
+static SemaphoreHandle_t xGpsAvailabilityMutex;
+
 extern TaskHandle_t taskGpsHandle;	//handler for the gps task
 
 /**
@@ -110,7 +113,24 @@ void	gps_CallBack(void)
   */
 uint8_t gps_available(void)
 {
-	return gps_availability;
+	uint8_t ret;
+	xSemaphoreTake( xGpsAvailabilityMutex, pdMS_TO_TICKS(1000));						//wait for mutex
+	ret = gps_availability;
+	xSemaphoreGive( xGpsAvailabilityMutex );
+	return ret;
+}
+
+/**
+  * @brief  function to set the availability flag
+	*	@param 	av	new availability
+	*	@note		The acess to the variable should be syncronized by a mutex
+  * @retval None
+  */
+void gps_set_availability(uint8_t av)
+{
+	xSemaphoreTake( xGpsAvailabilityMutex, pdMS_TO_TICKS(1000));						//wait for mutex
+	gps_availability = av;
+	xSemaphoreGive( xGpsAvailabilityMutex );
 }
 
 /**
@@ -153,23 +173,26 @@ void vGps_taskFunction(void const * argument)
 	for(;;)
   {
 		// notification take (binnary semaphore like)
-		while( ulTaskNotifyTake( pdTRUE, portMAX_DELAY ) == pdFAIL);  
+		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );  
 
 		if ( gps_process(&my_gps, &buff_arr[!buff_receiving][0]) == GPS_SUCESS) //process data
 		{
 			gps = my_gps;
-			gps_availability = 1;
+			gps_set_availability(GPS_SUCESS);
 			last_gps_tick = HAL_GetTick();		//reset timeout if gps is available
 		}
 		else																//if the timeout exeeds, set availability accordingly
-			if( gps_availability )				
+		{
+			if( gps_available() )				
 				if( (HAL_GetTick()-last_gps_tick) > (GPS_AVAILABLE_TIMEOUT*HAL_GetTickFreq()*1000) )
 				{
-					gps_availability = 0;
+					xSemaphoreTake( xGpsAvailabilityMutex, pdMS_TO_TICKS(1000));//wait for mutex
+					gps_set_availability(GPS_FAIL);
+					xSemaphoreGive( xGpsAvailabilityMutex );
 					gps.latitude = -1000;
 					gps.longitude = -1000;
 				}
-
+		}
   }
 	
 }
